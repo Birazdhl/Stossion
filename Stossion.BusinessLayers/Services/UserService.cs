@@ -41,10 +41,10 @@ namespace Stossion.BusinessLayers.Services
                 if (user is not null) return new GeneralResponse() { flag = false, message = "User with this Email Id registered already" };
 
                 var getUserByUsername =  _userManager.Users.FirstOrDefault(u => u.UserName == model.UserName);
-                if (user is not null) return new GeneralResponse() { flag = false, message = "User with this Username registered already" };
+                if (getUserByUsername is not null) return new GeneralResponse() { flag = false, message = "User with this Username registered already" };
 
                 var getUserByPhoneNumber =  _userManager.Users.FirstOrDefault(u => u.PhoneNumber == model.PhoneNumber);
-                if (user is not null) return new GeneralResponse() { flag = false, message = "User with this Phone No. registered already" };
+                if (getUserByPhoneNumber is not null) return new GeneralResponse() { flag = false, message = "User with this Phone No. registered already" };
 
                 var createUser = await _userManager.CreateAsync(newUser!, model.Password);
                 if (!createUser.Succeeded) return new GeneralResponse() { flag = false, message = createUser.Errors.First().Description };
@@ -79,7 +79,7 @@ namespace Stossion.BusinessLayers.Services
 
             bool checkUserPasswords = await _userManager.CheckPasswordAsync(getUser, model.Password);
             if (!checkUserPasswords)
-                return new LoginResponse() { flag = false, token = null!, message = "Invalid email/password" };
+                return new LoginResponse() { flag = false, token = null!, message = "Invalid username/password" };
 
             var getUserRole = await _userManager.GetRolesAsync(getUser);
             
@@ -93,7 +93,7 @@ namespace Stossion.BusinessLayers.Services
             };
             
             string token = GenerateToken(userSession);
-            return new LoginResponse() { flag = false, token = token!, message = "Login completed" };
+            return new LoginResponse() { flag = true, token = token!, message = "Login completed" };
 
         }
 

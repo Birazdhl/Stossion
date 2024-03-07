@@ -58,22 +58,18 @@ namespace Stossion.Helpers.RestHelpers
             }
         }
 
-        public static async Task<T> Post<T,X>(string Controller, string MethodName, X data,string? host = null,bool isUrl = false)
+        public static async Task<T> Post<T,X>(string Controller, string MethodName, X data,string? host = null)
         {
             try
             {
                 var url = string.Empty;
 
-                if (isUrl)
+                if (String.IsNullOrWhiteSpace(MethodName))
                 {
                     url = Controller;
                 }
                 else
                 {
-                    if (String.IsNullOrEmpty(host))
-                    {
-                        host += "/";
-                    }
                     url = host + Controller + (String.IsNullOrEmpty(MethodName) ? string.Empty : "/" + MethodName);
                 }
 
@@ -81,7 +77,7 @@ namespace Stossion.Helpers.RestHelpers
                 {
                     using (var client = new HttpClient(handler))
                     {
-                        HttpResponseMessage response = await client.PutAsJsonAsync(url,data);
+                        HttpResponseMessage response = await client.PostAsJsonAsync(url,data);
                         if (response.IsSuccessStatusCode)
                         {
                             var result = await response.Content.ReadAsStringAsync();

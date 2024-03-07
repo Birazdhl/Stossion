@@ -15,3 +15,5 @@
 /.vs/Stossion.API
 /Stossion.API/bin/Debug/net8.0
 /Stossion.API/obj
+/Stossion.Web/bin/Debug/net8.0
+/Stossion.Web/obj
