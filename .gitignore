@@ -1,0 +1,17 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Stossion.BusinessLayers/bin/Debug/net8.0
+/Stossion.BusinessLayers/obj
+/Stossion.DbManagement/bin/Debug/net8.0
+/Stossion.DbManagement/obj
+/Stossion.Domain/obj
+/Stossion.Domain/bin/Debug/net8.0
+/Stossion.Helpers/bin/Debug/net8.0
+/Stossion.Helpers/obj
+/Stossion.ViewModels/bin/Debug/net8.0
+/Stossion.ViewModels/obj
+/.vs/Stossion.API
+/Stossion.API/bin/Debug/net8.0
+/Stossion.API/obj
