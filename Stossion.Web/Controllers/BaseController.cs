@@ -1,22 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stossion.Helpers.RestHelpers;
 using Stossion.ViewModels.User;
+using System;
 
 namespace Stossion.Web.Controllers
 {
 	public class BaseController(IConfiguration configuration) : Controller
 	{
-		public async Task<T> StossionPost<T,X>(string controller, string action, X model)
+		public async Task<ApiResponse> StossionPost<X>(string controller, string action, X model)
 		{
 			var hostUri = configuration.GetValue<string>("StossionAPI");
-			var result = await RestAPI.Post<T, X>("User", "Login", model, hostUri);
-			return (T)result;
+			var result = await RestAPI.Post<X>(controller, action, model, hostUri);
+			return result;
 		}
 
-		public async Task<IActionResult> StossionGet(LoginViewModel model)
+		public async Task<ApiResponse> StossionGet(string controller, string action)
 		{
-			var result = await RestAPI.Post<IActionResult, LoginViewModel>("User", "Login", model);
-			return View(result);
+			var hostUri = configuration.GetValue<string>("StossionAPI");
+			var result = await RestAPI.Get(controller, action, hostUri);
+			return result;
 		}
 	}
 }

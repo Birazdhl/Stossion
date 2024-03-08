@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Stossion.BusinessLayers.Interfaces;
 
@@ -9,6 +10,8 @@ namespace Stossion.API.Controllers
     public class CountryController(ICountryInterface _countryInterface) : ControllerBase
     {
         [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [Route("UpdateCountryList")]
         public async Task<string>  UpdateCountryList()
         {
            return await _countryInterface.UpdateCountriesList();

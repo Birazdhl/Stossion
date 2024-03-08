@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Stossion.Helpers.RestHelpers;
 using Stossion.ViewModels.User;
 using Stossion.Web.Models;
@@ -19,13 +20,15 @@ namespace Stossion.Web.Controllers
         public async Task<IActionResult> Login(LoginViewModel model)
         {
 			// Call external API to get token, flag, and claims based on username and password
-            var result = await StossionPost<LoginResponse, LoginViewModel>("User", "Login", model);
+			var response = await StossionPost("User", "Login", model);
 
+            var result = JsonConvert.DeserializeObject<LoginResponse>(response.result);
 
 			if (result.flag)
             {
-				// Store the token securely (e.g., in a secure cookie or session)
-				HttpContext.Response.Cookies.Append("AuthorizationToken", result.token);
+                // Store the token securely (e.g., in a secure cookie or session)
+                HttpContext.Response.Cookies.Append("AuthorizationToken", result.token);
+
                 return RedirectToAction("Index","Home");
 			}
 

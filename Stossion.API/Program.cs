@@ -36,28 +36,23 @@ builder.Services.AddIdentity<StossionUser, IdentityRole>()
     .AddRoles<IdentityRole>();
 
 // JWT 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-		.AddJwtBearer(options =>
-		{
-			options.TokenValidationParameters = new TokenValidationParameters
-			{
-				ValidateIssuer = true,
-				ValidateAudience = true,
-				ValidateLifetime = true,
-				ValidateIssuerSigningKey = true,
-				ClockSkew = TimeSpan.Zero
-			};
-
-			options.Events = new JwtBearerEvents
-			{
-				OnAuthenticationFailed = context =>
-				{
-					// Handle authentication failure, if needed
-					return Task.CompletedTask;
-				}
-			};
-		});
-
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateIssuerSigningKey = true,
+		ValidateLifetime = true,
+		ValidIssuer = builder.Configuration["Jwt:Issuer"],
+		ValidAudience = builder.Configuration["Jwt:Audience"],
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+	};
+});
 
 //builder.Services.AddScoped<IUserInterface, UserService>();
 

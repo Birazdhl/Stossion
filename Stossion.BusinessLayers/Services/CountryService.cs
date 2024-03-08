@@ -1,4 +1,5 @@
-﻿using Stossion.BusinessLayers.Interfaces;
+﻿using Newtonsoft.Json;
+using Stossion.BusinessLayers.Interfaces;
 using Stossion.DbManagement.StossionDbManagement;
 using Stossion.Domain;
 using Stossion.Helpers.RestHelpers;
@@ -15,8 +16,9 @@ namespace Stossion.BusinessLayers.Services
     {
         public async Task<string> UpdateCountriesList()
         {
-            var countryList = await RestAPI.Get<List<CountryViewModel>>("https://restcountries.com/v3.1/all");
-            if (countryList != null) {
+            var response = await RestAPI.Get("https://restcountries.com/v3.1/all");
+            var countryList = JsonConvert.DeserializeObject<List<CountryViewModel>>(response.result);
+			if (countryList != null) {
                 foreach (var item in countryList)
                 {
                     var country = _dbContext.Country.Where(x => x.Name == item.name.common).FirstOrDefault();

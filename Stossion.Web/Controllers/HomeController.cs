@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stossion.Web.Authorization;
 using Stossion.Web.Models;
 using System.Diagnostics;
 
@@ -19,7 +20,7 @@ namespace Stossion.Web.Controllers
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Privacy()
         {
             return View();
