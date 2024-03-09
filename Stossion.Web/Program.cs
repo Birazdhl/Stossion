@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Stossion.Web.Middleware;
+using System.Net;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +26,8 @@ builder.Services.AddAuthentication( options => {
 		ValidateIssuerSigningKey = true,
 		ValidIssuer = builder.Configuration["Jwt:Issuer"],
 		ValidAudience = builder.Configuration["Jwt:Audience"],
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+		ClockSkew = TimeSpan.Zero
 	};
 });
 
@@ -46,7 +48,15 @@ app.UseRouting();
 
 app.UseMiddleware<JwtTokenMiddleware>();
 
+
 app.UseAuthentication();
+app.UseStatusCodePages(context => {
+	var response = context.HttpContext.Response;
+	if (response.StatusCode == (int)HttpStatusCode.Forbidden || response.StatusCode == (int)HttpStatusCode.Unauthorized)
+		response.Redirect("/Login");
+
+	return Task.CompletedTask;
+});
 app.UseAuthorization();
 
 

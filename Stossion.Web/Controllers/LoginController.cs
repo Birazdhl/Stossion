@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -5,15 +6,21 @@ using Stossion.Helpers.RestHelpers;
 using Stossion.ViewModels.User;
 using Stossion.Web.Models;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Stossion.Web.Controllers
 {
-    public class LoginController(IConfiguration configuration) : BaseController(configuration)
+    [AllowAnonymous]
+    public class LoginController(IConfiguration configuration, IHttpContextAccessor contextAccessor) : BaseController(configuration, contextAccessor)
     {
         
         public IActionResult Index()
         {
-            return View();
+			if (User.Identity != null && User.Identity.IsAuthenticated)
+			{
+				return RedirectToAction("Index", "Home");
+			}
+			return View();
         }
 
         [HttpPost]
@@ -33,7 +40,23 @@ namespace Stossion.Web.Controllers
 			}
 
 
-			return RedirectToAction("Index");
+			return NoContent();
+		}
+
+        public async Task<IActionResult> Logout()
+        {
+            var response = await StossionPost("User", "Logout",string.Empty);
+
+            if (response.result?.ToLower() == "logged out")
+            {
+				foreach (var cookie in Request.Cookies.Keys)
+				{
+					Response.Cookies.Delete(cookie);
+				}
+				return RedirectToAction("Index", "Login");
+			}
+			return NoContent();
+
 		}
     }
 }

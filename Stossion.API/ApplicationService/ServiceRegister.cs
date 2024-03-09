@@ -10,6 +10,7 @@ namespace Stossion.API.ApplicationService
             // Add your repository and other services here
             service.AddScoped<IUserInterface, UserService>();
             service.AddScoped<ICountryInterface, CountryService>();
-        }
+			service.AddScoped<ITokenInterface, TokenService>();
+		}
     }
 }

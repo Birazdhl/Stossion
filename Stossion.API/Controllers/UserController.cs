@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Stossion.BusinessLayers.Interfaces;
+using Stossion.Domain;
 using Stossion.ViewModels.User;
+using System.Security.Claims;
 
 namespace Stossion.API.Controllers
 {
@@ -25,5 +29,30 @@ namespace Stossion.API.Controllers
             var response = await userInterface.LoginUser(model);
             return Ok(response);
         }
-    }
+
+        [HttpPost]
+        [Route("RefreshToken")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenViewModel request)
+        {
+            var response = await userInterface.Refresh(request);
+            return Ok(response);
+        }
+
+		[Authorize]
+		[HttpPost]
+		[Route("Logout")]
+		public async Task<IActionResult> Logout()
+		{
+            var user = userInterface.GetUserDetails();
+            if (user == null)
+            {
+				return Unauthorized();
+			}
+            Guid.TryParse(user.Id, out Guid userId);
+
+            await userInterface.Logout(userId);
+            return Ok("Logged Out");
+		}
+
+	}
 }

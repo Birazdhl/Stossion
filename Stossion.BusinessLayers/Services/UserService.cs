@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using Stossion.BusinessLayers.Interfaces;
 using Stossion.DbManagement.StossionDbManagement;
+using Stossion.Domain;
 using Stossion.Helpers.RestHelpers;
 using Stossion.ViewModels.User;
 using System;
@@ -20,7 +23,9 @@ namespace Stossion.BusinessLayers.Services
         UserManager<StossionUser> _userManager, 
         RoleManager<IdentityRole> _roleManager,
         IHttpContextAccessor _httpContextAccessor,
-        IConfiguration _config) : IUserInterface
+        StossionDbContext _context,
+        IConfiguration _config,
+        ITokenInterface _tokenRepository) : IUserInterface
     {
         public async Task<GeneralResponse> CreateUser(RegisterViewModel model)
         {
@@ -81,55 +86,50 @@ namespace Stossion.BusinessLayers.Services
             if (!checkUserPasswords)
                 return new LoginResponse() { flag = false, token = null!, message = "Invalid username/password" };
 
-            var getUserRole = await _userManager.GetRolesAsync(getUser);
-            
-            var userSession = new UserSession() { 
-                UserId = getUser.Id, 
-                FirstName = getUser.FirstName ?? string.Empty,
-                LastName = getUser.LastName ?? string.Empty,
-                Email = getUser.Email ?? string.Empty,
-                Role = getUserRole.First() ?? string.Empty,
-                UserName = getUser.UserName ?? string.Empty
-            };
-            
-            string token = GenerateToken(userSession);
-            return new LoginResponse() { flag = true, token = token!, message = "Login completed" };
+            return await _tokenRepository.GenerateAndReturnToken(model.Username);
 
         }
-
-        private string GenerateToken(UserSession user)
+		
+        public async Task<LoginResponse> Refresh(RefreshTokenViewModel requestToken)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var userClaims = new[]
+            bool isValidateToken = _tokenRepository.ValidateToken(requestToken.RefreshToken);
+            if (!isValidateToken)
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
-                new Claim(ClaimTypes.GivenName, user.FirstName),
-                new Claim(ClaimTypes.Surname, user.LastName)
-            };
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: userClaims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials
-                );
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+				return new LoginResponse() { flag = true, token = null, refreshToken = null, message = "Invalid Token" };
+			}
+            var refreshToken = await _tokenRepository.GetByToken(requestToken.RefreshToken);
+            if (refreshToken == null)
+            {
+				return new LoginResponse() { flag = true, token = null, refreshToken = null, message = "Token Not Found" };
+			}
 
-        public string GetUserDetails()
-        {
-            string result = string.Empty;
-            ClaimsPrincipal? currentUser = _httpContextAccessor.HttpContext?.User;
-            if (currentUser?.Identity?.IsAuthenticated == true)
+            await _tokenRepository.Delete(refreshToken.Id);
+
+           var getUser = _userManager.Users.FirstOrDefault(u => u.Id == refreshToken.UserId);
+            if (getUser == null)
             {
-                Claim? nameClaim = currentUser.FindFirst(ClaimTypes.Name) ?? null;
-                result = nameClaim?.Value ?? result;
-            }
-            return result;
-        }
-    }
+				return new LoginResponse() { flag = true, token = null, refreshToken = null, message = "Token Not Found" };
+			}
+
+			return await _tokenRepository.GenerateAndReturnToken(getUser.UserName ?? string.Empty);
+
+		}
+
+		public StossionUser? GetUserDetails()
+		{
+            var result = new StossionUser();
+			ClaimsPrincipal? currentUser = _httpContextAccessor.HttpContext?.User;
+			if (currentUser?.Identity?.IsAuthenticated == true)
+			{
+                var username = currentUser?.Identity.Name;
+				var getUser = _userManager.Users.FirstOrDefault(u => u.UserName == username);
+			}
+			return result;
+		}
+		public Task Logout(Guid id)
+		{
+			_tokenRepository.Delete(id);
+            return Task.CompletedTask;
+		}
+	}
 }

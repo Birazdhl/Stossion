@@ -6,15 +6,8 @@ using System.Diagnostics;
 
 namespace Stossion.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(IConfiguration configuration,IHttpContextAccessor contextAccessor) : BaseController(configuration, contextAccessor)
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         public IActionResult Index()
         {
             return View();

@@ -1,4 +1,5 @@
-﻿using Stossion.Helpers.RestHelpers;
+﻿using Stossion.DbManagement.StossionDbManagement;
+using Stossion.Helpers.RestHelpers;
 using Stossion.ViewModels.User;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace Stossion.BusinessLayers.Interfaces
     {
         Task<GeneralResponse> CreateUser(RegisterViewModel model);
         Task<LoginResponse> LoginUser(LoginViewModel model);
-        string GetUserDetails();
-
-    }
+        Task<LoginResponse> Refresh(RefreshTokenViewModel requestToken);
+        StossionUser? GetUserDetails();
+        Task Logout(Guid id);
+	}
 }

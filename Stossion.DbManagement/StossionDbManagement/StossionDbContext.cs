@@ -18,6 +18,7 @@ namespace Stossion.DbManagement.StossionDbManagement
         public DbSet<Country> Country { get; set; }
         public DbSet<Gender> Gender {  get; set; }
         public DbSet<ErrorLog> ErrorLogs { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     }
 

@@ -21,15 +21,16 @@ public class ExceptionMiddleware(RequestDelegate _next, ILogger<ExceptionMiddlew
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An unhandled exception occurred.");
-                var username = _userInterface.GetUserDetails();
+                var user = _userInterface.GetUserDetails();
+
 
                 // Log to the database
                 dbContext.ErrorLogs.Add(new ErrorLog
                 {
                     Message = ex.Message,
                     StackTrace = ex.StackTrace ?? string.Empty,
-                    DateTime = DateTime.UtcNow,
-                    Username = String.IsNullOrEmpty(username) ? string.Empty : username,
+                    DateTime = DateTime.Now,
+                    Username = user?.UserName ?? string.Empty,
                 });
 
                 await dbContext.SaveChangesAsync();

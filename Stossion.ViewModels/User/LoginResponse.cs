@@ -9,7 +9,8 @@ namespace Stossion.ViewModels.User
     public class LoginResponse
     {
         public bool flag { get; set; }
-        public string token { get; set; }
-        public string message { get; set; }
+        public string? token { get; set; }
+        public string? message { get; set; }
+        public string? refreshToken { get; set; }
     }
 }
