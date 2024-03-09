@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Stossion.BusinessLayers.Interfaces;
 using Stossion.DbManagement.StossionDbManagement;
 using Stossion.Domain;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Stossion.BusinessLayers.Services
 {
-    public class CountryService(StossionDbContext _dbContext) : ICountryInterface
+    public class CountryService(StossionDbContext _dbContext, IDapperInterface _dapperInterface) : ICountryInterface
     {
         public async Task<string> UpdateCountriesList()
         {
@@ -40,5 +41,15 @@ namespace Stossion.BusinessLayers.Services
 
             return ("Ok");
         }
-    }
+
+        public async Task<List<Country>> GetCountryList()
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append("Select * from Country");
+
+            var result = await _dapperInterface.QueryExecuteAsync<Country>(query.ToString());
+            return result;
+        }
+       
+	}
 }

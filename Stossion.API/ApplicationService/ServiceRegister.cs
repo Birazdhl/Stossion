@@ -11,6 +11,10 @@ namespace Stossion.API.ApplicationService
             service.AddScoped<IUserInterface, UserService>();
             service.AddScoped<ICountryInterface, CountryService>();
 			service.AddScoped<ITokenInterface, TokenService>();
+            service.AddScoped<IDapperDbContext, DapperDbContext>();
+			service.AddScoped<IDapperInterface, DapperRepository>();
+
+
 		}
-    }
+	}
 }
