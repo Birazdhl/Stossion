@@ -11638,6 +11638,28 @@ textarea.form-control {
         color: #fbceb5;
     }
 
+.registerInput {
+    width: 20rem;
+}
+
+select.loginSelect {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: none; /* Optional: Remove the default border */
+}
+
+/* Style for the options within the select element */
+option.loginOption {
+    background-color: #141414;
+    color: white;
+}
+
+.errorTxt {
+    display: flex;
+    color: red;
+    padding: 10px;
+}
+
 .btn {
     cursor: pointer;
     border-radius: 40px;
@@ -11674,3 +11696,5 @@ textarea.form-control {
                 background: #fbceb5;
                 color: #fff;
             }
+
+
