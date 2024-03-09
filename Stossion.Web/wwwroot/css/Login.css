@@ -11660,6 +11660,10 @@ option.loginOption {
     padding: 10px;
 }
 
+.ui-datepicker .ui-widget-content {
+    background: #999 none;
+}
+
 .btn {
     cursor: pointer;
     border-radius: 40px;
