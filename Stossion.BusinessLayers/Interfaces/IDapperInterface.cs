@@ -9,5 +9,6 @@ namespace Stossion.BusinessLayers.Interfaces
 	public interface IDapperInterface
 	{
 		Task<List<T>> QueryExecuteAsync<T>(string query);
+		Task<T> QueryExecuteSingleAsync<T>(string query);
 	}
 }
