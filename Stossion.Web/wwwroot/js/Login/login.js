@@ -42,7 +42,7 @@ $(document).ready(function () {
 
                 <div class="form-group d-flex">
                     <div>
-                        <input type="text" class="form-control registerInput" placeholder="Country" name="Country" required>
+                        <select class="form-control loginSelect registerInput" name="Country" placeholder="Select a Country" id="Country"></select>
                         <span class="errorTxt d-none" id="CountryField">This field is required</span>
                     </div>
                     <div>
@@ -59,7 +59,7 @@ $(document).ready(function () {
                           <option class="loginOption" value="2">Female</option>
                           <option class="loginOption" value="3">Other</option>
                         </select>
-                        <span class="errorTxt d-none" id="PhoneNumberFeild">This field is required</span>
+                        <span class="errorTxt d-none" id="Gender">This field is required</span>
                     </div>
                      <div>
                           <input type="string" class="form-control mx-4 registerInput" placeholder="PhoneNumber" name="PhoneNumber" required>
@@ -83,6 +83,29 @@ $(document).ready(function () {
         $(".swal2-container.in").css('background-color', 'rgba(43, 165, 137, 0.45)');//changes the color of the overlay
         $("#Birthday").datepicker();
 
+        $.ajax({
+            url: "/Common/GetCountryList", // Replace with your controller and action
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                // Handle the success response
+                if (data.length > 0) {
+                    var dropdown = $("#Country");
+
+                    // Iterate through the data and append options to the dropdown
+                    $.each(data, function (index, country) {
+                        var optionText = '<img src="' + country.logo + '" alt="' + encodeURIComponent(country.name) + '" class="country-flag" /> ' + country.name;
+                        var optionValue = country.symbol; // You can change this to country.id if needed
+                        dropdown.append($("<option class=\"loginOption\">").val(optionValue).html(optionText));
+                    });
+                }
+            },
+            error: function (error) {
+                // Handle errors
+                console.error(error);
+            }
+        });
+
         $("#registerUser").on('click', function () {
             var form = $("#registerFrm");
             if (!form.valid()) {
@@ -94,3 +117,5 @@ $(document).ready(function () {
    
 
 });
+
+//<input type="text" class="form-control registerInput" placeholder="Country" name="Country" required>

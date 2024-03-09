@@ -17,8 +17,9 @@ namespace Stossion.BusinessLayers.Services
     {
         public async Task<string> UpdateCountriesList()
         {
-            var response = await RestAPI.Get("https://restcountries.com/v3.1/all");
-            var countryList = JsonConvert.DeserializeObject<List<CountryViewModel>>(response.result);
+            ApiGetRequest request = new ApiGetRequest() { Controller = "https://restcountries.com/v3.1/all" };
+            var response = await RestAPI.Get(request);
+            var countryList = JsonConvert.DeserializeObject<List<CountryModel>>(response.result);
 			if (countryList != null) {
                 foreach (var item in countryList)
                 {

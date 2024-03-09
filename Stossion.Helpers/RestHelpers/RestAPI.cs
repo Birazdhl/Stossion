@@ -14,23 +14,25 @@ namespace Stossion.Helpers.RestHelpers
 {
     public  class RestAPI()
     {
-        public static async Task<ApiResponse> Get(string Controller, string? MethodName = null, string? host = null, string? paramName = null, string? param = null)
+		//string Controller, string? MethodName = null, string? host = null, string? paramName = null, string? param = null
+
+		public static async Task<ApiResponse> Get(ApiGetRequest request)
         {
             try
             {
                 var header = string.Empty;
 				var result = new ApiResponse();
 
-				if (String.IsNullOrEmpty(MethodName))
+				if (String.IsNullOrEmpty(request.MethodName))
                 {
-                    header = Controller;
+                    header = request.Controller;
                 }
                 else
                 {
-                    header = host + Controller + (String.IsNullOrEmpty(MethodName) ? string.Empty : "/" + MethodName);
-                    if (!String.IsNullOrEmpty(param))
+                    header = request.host + request.Controller + (String.IsNullOrEmpty(request.MethodName) ? string.Empty : "/" + request.MethodName);
+                    if (!String.IsNullOrEmpty(request.param))
                     {
-                        header = header + "?" + paramName + "=" + param;
+                        header = header + "?" + request.param + "=" + request.value;
                     }
                 }
                 var url = new Uri(header);
@@ -40,7 +42,20 @@ namespace Stossion.Helpers.RestHelpers
                 {
                     using (var client = new HttpClient(handler))
                     {
-                        HttpResponseMessage response = await client.GetAsync(url);
+                        if (request.headers != null && request?.headers.Count() > 0)
+                        {
+							foreach (var item in request.headers)
+							{
+								foreach (var pair in item)
+								{
+									client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(pair.Key, pair.Value);
+
+								}
+							}
+						}
+						
+
+						HttpResponseMessage response = await client.GetAsync(url);
                         if (response.IsSuccessStatusCode)
                         {
 							result.IsSuccess = response.IsSuccessStatusCode;

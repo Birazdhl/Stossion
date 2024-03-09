@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Stossion.Domain\Stossion.Domain.csproj" />
     <ProjectReference Include="..\Stossion.Helpers\Stossion.Helpers.csproj" />
     <ProjectReference Include="..\Stossion.ViewModels\Stossion.ViewModels.csproj" />
   </ItemGroup>

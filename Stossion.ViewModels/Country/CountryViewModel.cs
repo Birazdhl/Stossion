@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Stossion.ViewModels.Country
 {
-    public class CountryViewModel
+    public class CountryModel
     {
         public string cca3 { get; set; }
         public string region { get; set; }
@@ -23,4 +23,11 @@ namespace Stossion.ViewModels.Country
     {
         public string svg { get; set; }
     }
+
+    public class CountryViewModel
+    {
+		public string? Name { get; set; }
+		public string? Symbol { get; set; }
+		public string? Logo { get; set; }
+	}
 }
