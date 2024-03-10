@@ -94,9 +94,9 @@ $(document).ready(function () {
 
                     // Iterate through the data and append options to the dropdown
                     $.each(data, function (index, country) {
-                        var optionText = '<img src="' + country.logo + '" alt="' + encodeURIComponent(country.name) + '" class="country-flag" /> ' + country.name;
+                        var optionText = country.name;
                         var optionValue = country.symbol; // You can change this to country.id if needed
-                        dropdown.append($("<option class=\"loginOption\">").val(optionValue).html(optionText));
+                        dropdown.append($("<option class=\"loginOption\" logo='" + country.logo + "'>").val(optionValue).html(optionText));
                     });
                 }
             },
@@ -104,6 +104,27 @@ $(document).ready(function () {
                 // Handle errors
                 console.error(error);
             }
+        });
+
+        function formatOptions(state) {
+            if (!state.id) { return state.text; }
+            console.log(state.element);
+
+            var $state = $(
+                     '<span ><img sytle="display: inline-block;" src="images/' + state.element.logo + '"  /> ' + state.text + '</span>'
+                 );
+
+            return $state;
+        }
+
+        $("#Country").select2();
+
+        $("#Country").select2({
+            templateResult: formatOptions
+        });
+
+        $('#Country').next('.select2 .select2-container').css({
+            'z-index': 10000
         });
 
         $("#registerUser").on('click', function () {
