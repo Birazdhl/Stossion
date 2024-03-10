@@ -106,26 +106,51 @@ $(document).ready(function () {
             }
         });
 
-        function formatOptions(state) {
-            if (!state.id) { return state.text; }
-            console.log(state.element);
+        //function formatOptions(state) {
+        //    if (!state.id) { return state.text; }
+        //    console.log(state.element.find(":selected").data("id"));
 
-            var $state = $(
-                     '<span ><img sytle="display: inline-block;" src="images/' + state.element.logo + '"  /> ' + state.text + '</span>'
-                 );
+        //    var $state = $(
+        //             '<span ><img sytle="display: inline-block;" src="images/' + state.element.logo + '" style="height: 1rem;"  /> ' + state.text + '</span>'
+        //         );
 
-            return $state;
-        }
+        //    return $state;
+        //}
 
-        $("#Country").select2();
-
+        //$("#Country").select2("container").css("z-index", 100000);;
         $("#Country").select2({
-            templateResult: formatOptions
-        });
+            placeholder: "Select Country",
+            templateResult: function (data, container) {
+                
+                var flagImage = $("<img src='" + $(data.element).attr("logo") + "' style='height: 1rem;' />");
 
-        $('#Country').next('.select2 .select2-container').css({
-            'z-index': 10000
+                // Create a container (span) to hold both the image and the text
+                var resultContainer = $("<span></span>");
+
+                // Append the image and the text to the container
+                resultContainer.append(flagImage).append(' ' + data.text);
+
+                // Return the container
+                return resultContainer;
+            },
+            templateSelection: function (data, contianer) {
+                console.log(data);
+                var flagImage = $("<img src='" + $(data.element).attr("logo") + "' style='height: 1rem;' />");
+                var resultContainer = $("<span></span>");
+                // Append the image and the text to the container
+                resultContainer.append(flagImage).append(' ' + data.text);
+
+                // Return the container
+                return resultContainer;
+            }
         });
+        //$($("#Country").select2("container")).css("z-index", 100000);
+        //$("#Country").select2("container").AddClass("lol");
+
+
+        //$("#Country").select2({
+        //    templateResult: formatOptions
+        //});
 
         $("#registerUser").on('click', function () {
             var form = $("#registerFrm");
