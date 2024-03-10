@@ -11664,12 +11664,29 @@ option.loginOption {
     background: #999 none;
 }
 
-
-    .select2-container {
-    z-index: 100000
+.select2-container {
+    z-index: 100000;
 }
 
-    .btn {
+.countryDropdown {
+    background: black;
+    color: white;
+}
+
+/* Style for the first Select2 dropdown with black background */
+#Country + .select2-container .select2-selection {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: white;
+    text-align: left;
+    height: 45px;
+    border-radius: 33px;
+    padding-top: 0.4rem;
+    padding-left: 1rem;
+    border: 1px solid transparent;
+}
+
+
+.btn {
     cursor: pointer;
     border-radius: 40px;
     -webkit-box-shadow: none !important;

@@ -41,7 +41,7 @@ $(document).ready(function () {
                 </div>
 
                 <div class="form-group d-flex">
-                    <div>
+                    <div id="countryContainer">
                         <select class="form-control loginSelect registerInput" name="Country" placeholder="Select a Country" id="Country"></select>
                         <span class="errorTxt d-none" id="CountryField">This field is required</span>
                     </div>
@@ -75,7 +75,10 @@ $(document).ready(function () {
         `,
             showCancelButton: false,
             showCloseButton: true,
-            showConfirmButton: false
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: true,
+            allowEnterKey: false
         });
         $(".swal2-modal").css('background-color', '#000');//Optional changes the color of the sweetalert 
         $(".swal2-modal").css('width', 'fit-content');//Optional changes the color of the sweetalert 
@@ -106,51 +109,36 @@ $(document).ready(function () {
             }
         });
 
-        //function formatOptions(state) {
-        //    if (!state.id) { return state.text; }
-        //    console.log(state.element.find(":selected").data("id"));
-
-        //    var $state = $(
-        //             '<span ><img sytle="display: inline-block;" src="images/' + state.element.logo + '" style="height: 1rem;"  /> ' + state.text + '</span>'
-        //         );
-
-        //    return $state;
-        //}
-
-        //$("#Country").select2("container").css("z-index", 100000);;
         $("#Country").select2({
             placeholder: "Select Country",
+            containerCssClass: "countrySelectContainer",
+            dropdownCssClass: "countryDropdown",
             templateResult: function (data, container) {
                 
-                var flagImage = $("<img src='" + $(data.element).attr("logo") + "' style='height: 1rem;' />");
-
+                var flagImage = $("<img src='" + $(data.element).attr("logo") + "' style='height: 1rem; width: 2rem;' />");
+                var countryName = $("<span style=\"padding-left: 1rem;color: white;\">" + data.text + "</span>")
                 // Create a container (span) to hold both the image and the text
                 var resultContainer = $("<span></span>");
 
                 // Append the image and the text to the container
-                resultContainer.append(flagImage).append(' ' + data.text);
+                resultContainer.append(flagImage).append(countryName);
 
                 // Return the container
                 return resultContainer;
             },
             templateSelection: function (data, contianer) {
-                console.log(data);
-                var flagImage = $("<img src='" + $(data.element).attr("logo") + "' style='height: 1rem;' />");
+                var flagImage = $("<img src='" + $(data.element).attr("logo") + "' style='height: 2rem;' />");
+                var countryName = $("<span style=\"padding-left: 1rem;color: white;\">" + data.text + "</span>")
                 var resultContainer = $("<span></span>");
+
                 // Append the image and the text to the container
-                resultContainer.append(flagImage).append(' ' + data.text);
+                //resultContainer.append(flagImage).append(' ' + data.text);
+                resultContainer.append(flagImage).append(countryName);
 
                 // Return the container
                 return resultContainer;
-            }
+            },
         });
-        //$($("#Country").select2("container")).css("z-index", 100000);
-        //$("#Country").select2("container").AddClass("lol");
-
-
-        //$("#Country").select2({
-        //    templateResult: formatOptions
-        //});
 
         $("#registerUser").on('click', function () {
             var form = $("#registerFrm");
@@ -164,4 +152,3 @@ $(document).ready(function () {
 
 });
 
-//<input type="text" class="form-control registerInput" placeholder="Country" name="Country" required>
