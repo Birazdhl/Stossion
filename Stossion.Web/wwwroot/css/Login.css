@@ -11447,7 +11447,7 @@ h1, h2, h3, h4, h5,
 }
 
 .ftco-section {
-    padding: 7em 0;
+    padding: 1em 0;
 }
 
 .ftco-no-pt {
@@ -11694,6 +11694,11 @@ option.loginOption {
     box-shadow: none !important;
     font-size: 15px;
     text-transform: uppercase;
+}
+
+.swal2-popup .swal2-button {
+    padding: 10px 20px; /* Adjust the padding to change the button size */
+    font-size: 16px; /* Adjust the font size if needed */
 }
 
     .btn:hover, .btn:active, .btn:focus {

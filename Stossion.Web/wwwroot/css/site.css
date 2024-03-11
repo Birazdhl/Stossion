@@ -27,3 +27,7 @@ body {
     padding-left: 10px;
     cursor: pointer;
 }
+
+.swal-button--confirm {
+    color: green
+}

@@ -67,26 +67,65 @@ $(document).ready(function () {
                     </div>
                 </div>
 
-                <div class="swal2-actions d-flex">
-                    <button type="button" class="swal2-cancel btn btn-secondary mx-2">Cancel</button>
-                    <button type="button" class="swal2-confirm btn btn-primary d-flex" id="registerUser">Register</button>
-                </div>
+                
             </form>
         `,
-            showCancelButton: false,
+            showCancelButton: true,
             showCloseButton: true,
-            showConfirmButton: false,
+            showConfirmButton: true,
             allowOutsideClick: false,
             allowEscapeKey: false,
-            preConfirm: () => {
-                    return false; // Prevent confirmed
+            allowEnterKey: false,
+            confirmButtonText: 'Register',
+            confirmButtonColor: "green",
+            preConfirm: function () {
+                return new Promise(function (resolve, reject) {
+                    var form = $("#registerFrm");
+                    isValidated = true;
+
+                    // Validation functions
+                    if (!validateFirstName()) {
+                        isValidated = false;
+                    }
+
+                    if (!validateUsername()) {
+                        isValidated = false;
+                    }
+
+                    if (!validateEmailInput()) {
+                        isValidated = false;
+                    }
+
+                    if (!validatePassword()) {
+                        isValidated = false;
+                    }
+
+                    if (!validateConfirmPassword()) {
+                        isValidated = false;
+                    }
+
+                    if (!validateGender()) {
+                        isValidated = false;
+                    }
+
+                    if (isValidated) {
+                        resolve();
+                    } else {
+                        reject();
+                    }
+                });
             }
-        });
+        }).then(function () {
+            alert("message");
+        }).catch(swal.noop);
+
         $(".swal2-modal").css('background-color', '#000');//Optional changes the color of the sweetalert 
         $(".swal2-modal").css('width', 'fit-content');//Optional changes the color of the sweetalert 
         $(".swal2-modal").css('margin-top', '2rem');
         $(".swal2-container.in").css('background-color', 'rgba(43, 165, 137, 0.45)');//changes the color of the overlay
         $(".swal2-title").css("color", "white");
+        $(".swal2-confirm").css({ "padding": "0px", "height": "3rem", "width": "8rem" });
+        $(".swal2-cancel").css({ "padding": "0px", "height": "3rem", "width": "8rem" });
        
         $('#Birthday').bootstrapMaterialDatePicker({           
             weekStart: 0,
@@ -145,30 +184,18 @@ $(document).ready(function () {
                 // Return the container
                 return resultContainer;
             },
-        });
+        }).on("select2:open", function () {
+                $(".select2-search__field").on("keydown", function (e) {
+                    if (e.keyCode === 13) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                });
+            });  
 
         var date = new Date();
         date = getDateFormat(date.setFullYear(date.getFullYear() - 12));
         $("#Birthday").val(date);
-        $("#registerUser").on('click', function () {
-                var form = $("#registerFrm");
-                isValidated = true;
-
-                validateFirstName();
-
-                validateUsername();
-
-                validateEmailInput();
-
-                validatePassword();
-
-                validateConfirmPassword();
-
-                validateGender();
-
-
-                return false;
-        });
     });
 
     $(document).on('focusout', '#firstName', function () {
@@ -225,9 +252,10 @@ $(document).ready(function () {
         if ($('#firstName').val().length <= 0) {
             $('#firstNameErrorField').text("First Name is required");
             $('#firstNameErrorField').removeClass("d-none");
-            isValidated = false;
+            return false;
         } else {
             $('#firstNameErrorField').addClass("d-none");
+            return true;
         }
     }
     function validateEmailInput() {
@@ -235,45 +263,47 @@ $(document).ready(function () {
         if (!isEmailValid) {
             $('#EmailErrorField').text("Invalid! Email Id");
             $('#EmailErrorField').removeClass("d-none");
-            isValidated = false;
-        } else { $('#EmailErrorField').addClass("d-none"); }
+            return false;
+        } else { $('#EmailErrorField').addClass("d-none"); return true; }
     }
     function validateUsername() {
         if ($('#Username').val().length <= 0) {
             $('#UsernameErrorField').text("User Name is required");
             $('#UsernameErrorField').removeClass("d-none");
-            isValidated = false;
+            return false;
         } else {
             if ($('#Username').val().length > 0) {
                 var regex = /^[a-zA-Z0-9_!@#$%^&*()-+=]{5,20}$/;
                 var value = $('#Username').val();
                 if (regex.test(value)) {
                     $('#UsernameErrorField').addClass("d-none");
+                    return true;
                 }
                 else {
                     $('#UsernameErrorField').text("Invalid! Username");
                     $('#UsernameErrorField').removeClass("d-none");
-                    isValidated = false;
+                    return false;
                 }
             }
 
-            else { $('#UsernameErrorField').addClass("d-none"); }
+            else { $('#UsernameErrorField').addClass("d-none"); return true; }
         }
     }
     function validatePassword() {
         if ($('#Password').val().length <= 0) {
             $('#PasswordErrorField').text("Password is required");
             $('#PasswordErrorField').removeClass("d-none");
-            isValidated = false;
+            return false;
         } else {
             var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
             if (regex.test($('#Password').val())) {
                 $('#PasswordErrorField').addClass("d-none");
+                return true;
             }
             else {
                 $('#PasswordErrorField').text("Password must be 8 digits and contains [A-Z] [a-z] [1-9] [!@#$%^&*()_]");
                 $('#PasswordErrorField').removeClass("d-none");
-                isValidated = false;
+                return false;
             }
         }
     }
@@ -283,15 +313,17 @@ $(document).ready(function () {
             $('#ConfirmPasswordErrorField').removeClass("d-none");
         } else {
             $('#ConfirmPasswordErrorField').addClass("d-none");
+            return true;
         }
     }
     function validateGender() {
         if ($('#Gender').val() == "0") {
             $('#GenderErrorField').text("Please select a Gender");
             $('#GenderErrorField').removeClass("d-none");
-            isValidated = false;
+            return false;
         } else {
             $('#GenderErrorField').addClass("d-none");
+            return true;
         }
     }
 
