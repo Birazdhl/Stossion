@@ -17,4 +17,9 @@
     <ProjectReference Include="..\Stossion.ViewModels\Stossion.ViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\css\bootsrap-material\" />
+    <Folder Include="wwwroot\lib\bootstrap-material-datetimepicker\" />
+  </ItemGroup>
+
 </Project>

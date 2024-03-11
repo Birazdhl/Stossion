@@ -1,6 +1,7 @@
 ﻿
 $(document).ready(function () { 
-    $("#register").on('click', function () {
+    var isValidated = true;
+    $("#register").on('click',function () {
 
         swal({
             title: 'Register',
@@ -9,45 +10,44 @@ $(document).ready(function () {
 
                 <div class="form-group d-flex">
                     <div>
-                        <input type="text" class="form-control registerInput" placeholder="First Name" name="Firstname" required>
-                        <span class="errorTxt d-none" id="firstNameField">This field is required</span>
+                        <input type="text" class="form-control registerInput" id="firstName" placeholder="First Name" name="FirstName" >
+                        <span class="errorTxt d-none" id="firstNameErrorField"></span>
                     </div>
                     <div>
-                        <input type="text" class="form-control mx-4 registerInput" placeholder="Last Name" name="Lastname" required>
-                         <span class="errorTxt d-none" style="padding-left:36px;" id="lastNameField">This field is required</span>
-                    </div>
-                </div>
-
-                <div class="form-group d-flex">
-                    <div>
-                        <input type="text" class="form-control registerInput" placeholder="Username" name="Username" required>
-                        <span class="errorTxt d-none" id="UsernameField">This field is required</span>
-                    </div>
-                    <div>
-                        <input type="text" class="form-control mx-4 registerInput" placeholder="Email" name="Email" required>
-                         <span class="errorTxt d-none" style="padding-left:36px;" id="EmailField">This field is required</span>
+                        <input type="text" class="form-control mx-4 registerInput" placeholder="Last Name" name="Lastname" >
                     </div>
                 </div>
 
                 <div class="form-group d-flex">
                     <div>
-                        <input type="password" class="form-control registerInput" placeholder="Password" name="Password" required>
-                        <span class="errorTxt d-none" id="PasswordField">This field is required</span>
+                        <input type="text" class="form-control registerInput" placeholder="Username" id="Username" name="Username" >
+                        <span class="errorTxt d-none" id="UsernameErrorField"></span>
                     </div>
                     <div>
-                         <input type="password" class="form-control mx-4 registerInput" placeholder="Confirm Password" name="ConfirmPassword" required>
-                         <span class="errorTxt d-none" style="padding-left:36px;" id="ConfirmPasswordField">This field is required</span>
+                        <input type="text" class="form-control mx-4 registerInput" id="Email" placeholder="Email" name="Email" >
+                         <span class="errorTxt d-none" style="padding-left:36px;" id="EmailErrorField"></span>
+                    </div>
+                </div>
+
+                <div class="form-group d-flex">
+                    <div>
+                        <input type="password" class="form-control registerInput" placeholder="Password" id="Password" name="Password" >
+                        <span class="errorTxt d-none" id="PasswordErrorField"></span>
+                    </div>
+                    <div>
+                         <input type="password" class="form-control mx-4 registerInput" id="ConfirmPassword" placeholder="Confirm Password" name="ConfirmPassword" >
+                         <span class="errorTxt d-none" style="padding-left:36px;" id="ConfirmPasswordErrorField"></span>
                     </div>
                 </div>
 
                 <div class="form-group d-flex">
                     <div id="countryContainer">
                         <select class="form-control loginSelect registerInput" name="Country" placeholder="Select a Country" id="Country"></select>
-                        <span class="errorTxt d-none" id="CountryField">This field is required</span>
+                        <span class="errorTxt d-none" id="CountryErrorField"></span>
                     </div>
                     <div>
-                         <input type="text" class="form-control mx-4 registerInput" placeholder="Birthday" id="Birthday" name="Birthday" required>
-                         <span class="errorTxt d-none" style="padding-left:36px;" id="BirthdayField">This field is required</span>
+                         <input type="text" class="form-control mx-4 registerInput" placeholder="Birthday" id="Birthday" name="Birthday" >
+                         <span class="errorTxt d-none" style="padding-left:36px;" id="BirthdayErrorField"></span>
                     </div>
                 </div>
 
@@ -59,11 +59,11 @@ $(document).ready(function () {
                           <option class="loginOption" value="2">Female</option>
                           <option class="loginOption" value="3">Other</option>
                         </select>
-                        <span class="errorTxt d-none" id="Gender">This field is required</span>
+                        <span class="errorTxt d-none" id="GenderErrorField"></span>
                     </div>
                      <div>
-                          <input type="string" class="form-control mx-4 registerInput" placeholder="PhoneNumber" name="PhoneNumber" required>
-                          <span class="errorTxt d-none" style="padding-left:36px;" id="PhoneNumberFeild">This field is required</span>
+                          <input type="string" class="form-control mx-4 registerInput" id="PhoneNumber" placeholder="PhoneNumber" name="PhoneNumber" >
+                          <span class="errorTxt d-none" style="padding-left:36px;" id="PhoneNumberErrorField"></span>
                     </div>
                 </div>
 
@@ -77,14 +77,22 @@ $(document).ready(function () {
             showCloseButton: true,
             showConfirmButton: false,
             allowOutsideClick: false,
-            allowEscapeKey: true,
-            allowEnterKey: false
+            allowEscapeKey: false,
+            preConfirm: () => {
+                    return false; // Prevent confirmed
+            }
         });
         $(".swal2-modal").css('background-color', '#000');//Optional changes the color of the sweetalert 
         $(".swal2-modal").css('width', 'fit-content');//Optional changes the color of the sweetalert 
         $(".swal2-modal").css('margin-top', '2rem');
         $(".swal2-container.in").css('background-color', 'rgba(43, 165, 137, 0.45)');//changes the color of the overlay
-        $("#Birthday").datepicker();
+        $(".swal2-title").css("color", "white");
+       
+        $('#Birthday').bootstrapMaterialDatePicker({           
+            weekStart: 0,
+            time: false,
+            format: 'MMM DD YYYY'
+        });
 
         $.ajax({
             url: "/Common/GetCountryList", // Replace with your controller and action
@@ -94,7 +102,7 @@ $(document).ready(function () {
                 // Handle the success response
                 if (data.length > 0) {
                     var dropdown = $("#Country");
-
+                    dropdown.empty().trigger("change");
                     // Iterate through the data and append options to the dropdown
                     $.each(data, function (index, country) {
                         var optionText = country.name;
@@ -114,8 +122,8 @@ $(document).ready(function () {
             containerCssClass: "countrySelectContainer",
             dropdownCssClass: "countryDropdown",
             templateResult: function (data, container) {
-                
-                var flagImage = $("<img src='" + $(data.element).attr("logo") + "' style='height: 1rem; width: 2rem;' />");
+
+                var flagImage = $("<img src=\"" + $(data.element).attr("logo") + "\" style=\"height: 1rem; width: 2rem;\" />");
                 var countryName = $("<span style=\"padding-left: 1rem;color: white;\">" + data.text + "</span>")
                 // Create a container (span) to hold both the image and the text
                 var resultContainer = $("<span></span>");
@@ -127,12 +135,11 @@ $(document).ready(function () {
                 return resultContainer;
             },
             templateSelection: function (data, contianer) {
-                var flagImage = $("<img src='" + $(data.element).attr("logo") + "' style='height: 2rem;' />");
+                var flagImage = $("<img src=\"" + $(data.element).attr("logo") + "\" style=\"height: 2rem;\" />");
                 var countryName = $("<span style=\"padding-left: 1rem;color: white;\">" + data.text + "</span>")
                 var resultContainer = $("<span></span>");
 
                 // Append the image and the text to the container
-                //resultContainer.append(flagImage).append(' ' + data.text);
                 resultContainer.append(flagImage).append(countryName);
 
                 // Return the container
@@ -140,15 +147,154 @@ $(document).ready(function () {
             },
         });
 
+        var date = new Date();
+        date = getDateFormat(date.setFullYear(date.getFullYear() - 12));
+        $("#Birthday").val(date);
         $("#registerUser").on('click', function () {
-            var form = $("#registerFrm");
-            if (!form.valid()) {
+                var form = $("#registerFrm");
+                isValidated = true;
 
-            }
+                validateFirstName();
+
+                validateUsername();
+
+                validateEmailInput();
+
+                validatePassword();
+
+                validateConfirmPassword();
+
+                validateGender();
+
+
+                return false;
         });
     });
 
-   
+    $(document).on('focusout', '#firstName', function () {
+        validateFirstName();
+    });
+    $(document).on('focusout', '#Email', function () {
+        validateEmailInput();
+    });
 
+    $(document).on('focusout', '#Username', function () {
+        validateUsername();
+    });
+
+    $(document).on('focusout', '#Password', function () {
+        validatePassword();
+    });
+    $(document).on('focusout', '#ConfirmPassword', function () {
+        validateConfirmPassword();
+    });
+
+    $(document).on('change', '#Gender', function () {
+        validateGender();
+    });
+
+    $(document).on('input', '#PhoneNumber', function () {
+        debugger;
+        // Get the current value of the input field
+        var inputValue = $('#PhoneNumber').val();
+
+        // Use a regular expression to check if the input contains only numbers
+        var numbersOnly = /^\d{1,15}$/;
+
+        // If the input does not match the regular expression, clear the input field
+        if (!numbersOnly.test(inputValue) || inputValue.length > 15) {
+            $(this).val(inputValue.replace(/.$/, "")); 
+            //var value = inputValue.replace(/.$/, "");
+            //$(this).val(value);
+        }
+
+        if ($(this).val().length > 0) {
+            $('#PhoneNumberErrorField').text("Please enter with extension(numbers only)");
+            $('#PhoneNumberErrorField').removeClass("d-none");
+        } else {
+            $('#PhoneNumberErrorField').addClass("d-none");
+        }
+    });
+
+    $(document).on("input", '.registerInput',function () {
+        $(this).next('span.errorTxt').addClass('d-none');
+    });
+    function validateFirstName() {
+
+        //validate firstname that is requried
+        if ($('#firstName').val().length <= 0) {
+            $('#firstNameErrorField').text("First Name is required");
+            $('#firstNameErrorField').removeClass("d-none");
+            isValidated = false;
+        } else {
+            $('#firstNameErrorField').addClass("d-none");
+        }
+    }
+    function validateEmailInput() {
+        var isEmailValid = validateEmail("Email");
+        if (!isEmailValid) {
+            $('#EmailErrorField').text("Invalid! Email Id");
+            $('#EmailErrorField').removeClass("d-none");
+            isValidated = false;
+        } else { $('#EmailErrorField').addClass("d-none"); }
+    }
+    function validateUsername() {
+        if ($('#Username').val().length <= 0) {
+            $('#UsernameErrorField').text("User Name is required");
+            $('#UsernameErrorField').removeClass("d-none");
+            isValidated = false;
+        } else {
+            if ($('#Username').val().length > 0) {
+                var regex = /^[a-zA-Z0-9_!@#$%^&*()-+=]{5,20}$/;
+                var value = $('#Username').val();
+                if (regex.test(value)) {
+                    $('#UsernameErrorField').addClass("d-none");
+                }
+                else {
+                    $('#UsernameErrorField').text("Invalid! Username");
+                    $('#UsernameErrorField').removeClass("d-none");
+                    isValidated = false;
+                }
+            }
+
+            else { $('#UsernameErrorField').addClass("d-none"); }
+        }
+    }
+    function validatePassword() {
+        if ($('#Password').val().length <= 0) {
+            $('#PasswordErrorField').text("Password is required");
+            $('#PasswordErrorField').removeClass("d-none");
+            isValidated = false;
+        } else {
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (regex.test($('#Password').val())) {
+                $('#PasswordErrorField').addClass("d-none");
+            }
+            else {
+                $('#PasswordErrorField').text("Password must be 8 digits and contains [A-Z] [a-z] [1-9] [!@#$%^&*()_]");
+                $('#PasswordErrorField').removeClass("d-none");
+                isValidated = false;
+            }
+        }
+    }
+    function validateConfirmPassword() {
+        if ($('#ConfirmPassword').val() != $('#Password').val()) {
+            $('#ConfirmPasswordErrorField').text("Password dosen't match");
+            $('#ConfirmPasswordErrorField').removeClass("d-none");
+        } else {
+            $('#ConfirmPasswordErrorField').addClass("d-none");
+        }
+    }
+    function validateGender() {
+        if ($('#Gender').val() == "0") {
+            $('#GenderErrorField').text("Please select a Gender");
+            $('#GenderErrorField').removeClass("d-none");
+            isValidated = false;
+        } else {
+            $('#GenderErrorField').addClass("d-none");
+        }
+    }
+
+   
 });
 

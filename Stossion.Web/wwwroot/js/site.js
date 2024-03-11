@@ -2,3 +2,11 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+//function validateEmail(emailId) {
+//    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//    if (!emailRegex.test($('#' + emailId).val())) {
+//        return false;
+//    }
+//    return true;
+//}
