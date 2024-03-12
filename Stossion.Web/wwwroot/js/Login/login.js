@@ -133,6 +133,9 @@
                                     window.location.href = url;
                                     resolve();
                                 }
+                                else {
+                                    toastr.error(success.message)
+                                }
                                 reject();
                             },
                             error: function (error) {
@@ -148,26 +151,6 @@
                 });
             }
         }).then(function () {
-
-            console.log(postData);
-            //Register the Uset
-            //$.ajax({
-            //    url: "/Login/Register", // Replace with your controller and action
-            //    type: "POST",
-            //    dataType: "json",
-            //    data: postData,
-            //    success: function (success) {
-            //        // Handle the success response
-            //        if (data == "Ok") {
-
-            //        }
-            //    },
-            //    error: function (error) {
-            //        // Handle errors
-            //        console.error(error);
-            //    }
-            //});
-
 
         }).catch(swal.noop);
 

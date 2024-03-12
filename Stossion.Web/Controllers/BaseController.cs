@@ -61,14 +61,7 @@ namespace Stossion.Web.Controllers
 			string? auth = _httpContextAccessor?.HttpContext?.Request.Cookies["AuthorizationToken"];
 			request.host = hostUri;
 
-			if (!string.IsNullOrEmpty(auth))
-			{
-				Dictionary<string, string> bearer = new Dictionary<string, string>
-				{
-					{ "Bearer", auth }
-				};
-				request.headers.Add(bearer);
-			}
+			
 
 			if (request.headers?.Count() > 0)
 			{
@@ -85,6 +78,18 @@ namespace Stossion.Web.Controllers
 				}
 
 			}
+			else
+			{
+                if (!string.IsNullOrEmpty(auth))
+                {
+                    Dictionary<string, string> bearer = new Dictionary<string, string>
+					{
+					    { "Bearer", auth }
+					};
+                   
+                        request.headers = [bearer];
+                }
+            }
 
 			var result = await RestAPI.Get(request);
 			return result;
