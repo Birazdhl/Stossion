@@ -76,6 +76,7 @@ using (var serviceScope = app.Services.CreateScope())
 }
 app.UseExceptionMiddleware();
 
+app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

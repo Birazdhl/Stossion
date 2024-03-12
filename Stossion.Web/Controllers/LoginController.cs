@@ -58,5 +58,21 @@ namespace Stossion.Web.Controllers
 			return NoContent();
 
 		}
-    }
+
+		[HttpPost]
+		public async Task<IActionResult> Register(RegisterViewModel model)
+		{
+			var response = await StossionPost("User", "Register", model);
+			var result = JsonConvert.DeserializeObject<LoginResponse>(response.result);
+			if (result != null) {
+				if (result.flag)
+				{
+					// Store the token securely (e.g., in a secure cookie or session)
+					HttpContext.Response.Cookies.Append("AuthorizationToken", result.token ?? string.Empty);
+				}
+			}
+			return Ok(result);
+		}
+
+	}
 }

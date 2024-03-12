@@ -51,6 +51,14 @@ namespace Stossion.BusinessLayers.Services
             var result = await _dapperInterface.QueryExecuteAsync<Country>(query.ToString());
             return result;
         }
-       
+
+		public Country GetCountryById(int id)
+		{
+			return _dbContext.Country.Where(x => x.Id == id).FirstOrDefault() ?? new Country();
+		}
+		public Country GetCountryBySymbol(string sym)
+		{
+            return  _dbContext.Country.Where(x => x.Symbol == sym).FirstOrDefault() ?? new Country();
+		}
 	}
 }

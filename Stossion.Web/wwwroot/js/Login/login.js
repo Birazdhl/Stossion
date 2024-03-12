@@ -1,5 +1,4 @@
-﻿
-$(document).ready(function () { 
+﻿$(document).ready(function () { 
     var isValidated = true;
     $("#register").on('click',function () {
 
@@ -14,7 +13,7 @@ $(document).ready(function () {
                         <span class="errorTxt d-none" id="firstNameErrorField"></span>
                     </div>
                     <div>
-                        <input type="text" class="form-control mx-4 registerInput" placeholder="Last Name" name="Lastname" >
+                        <input type="text" class="form-control mx-4 registerInput" id="lastName" placeholder="Last Name" name="Lastname" >
                     </div>
                 </div>
 
@@ -109,14 +108,67 @@ $(document).ready(function () {
                     }
 
                     if (isValidated) {
-                        resolve();
+
+                        var postData = {
+                            "UserName": $("#Username").val(),
+                            "FirstName": $("#firstName").val(),
+                            "LastName": $("#lastName").val(),
+                            "Country": $("#Country").val(),
+                            "Password": $("#Password").val(),
+                            "ConfirmPassword": $("#ConfirmPassword").val(),
+                            "PhoneNumber": $("#PhoneNumber").val(),
+                            "Email": $("#Email").val(),
+                            "Birthday": $("#Birthday").val(),
+                            "Gender": $("#Gender").val(),
+                        };
+                        $.ajax({
+                            url: "/Login/Register", // Replace with your controller and action
+                            type: "POST",
+                            dataType: "json",
+                            data: postData,
+                            success: function (success) {
+                                // Handle the success response
+                                if (success.flag) {
+                                    var url = '/Login/Index';
+                                    window.location.href = url;
+                                    resolve();
+                                }
+                                reject();
+                            },
+                            error: function (error) {
+                                reject();
+                                // Handle errors
+                                console.error(error);
+                            }
+                        });
+
                     } else {
                         reject();
                     }
                 });
             }
         }).then(function () {
-            alert("message");
+
+            console.log(postData);
+            //Register the Uset
+            //$.ajax({
+            //    url: "/Login/Register", // Replace with your controller and action
+            //    type: "POST",
+            //    dataType: "json",
+            //    data: postData,
+            //    success: function (success) {
+            //        // Handle the success response
+            //        if (data == "Ok") {
+
+            //        }
+            //    },
+            //    error: function (error) {
+            //        // Handle errors
+            //        console.error(error);
+            //    }
+            //});
+
+
         }).catch(swal.noop);
 
         $(".swal2-modal").css('background-color', '#000');//Optional changes the color of the sweetalert 
@@ -221,7 +273,6 @@ $(document).ready(function () {
     });
 
     $(document).on('input', '#PhoneNumber', function () {
-        debugger;
         // Get the current value of the input field
         var inputValue = $('#PhoneNumber').val();
 
@@ -243,8 +294,17 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on("input", '.registerInput',function () {
-        $(this).next('span.errorTxt').addClass('d-none');
+    $(document).on("input", '.registerInput', function () {
+        //$(this).next('span.errorTxt').addClass('d-none');
+
+        var errorSpan = $(this).next('span.errorTxt');
+
+        // Check if the errorTxt class has the ID PhoneNumberErrorField
+        if (errorSpan.attr("id") == 'PhoneNumberErrorField') {
+            errorSpan.remove('d-none');
+        } else {
+            errorSpan.addClass('d-none');
+        }
     });
     function validateFirstName() {
 
@@ -295,7 +355,7 @@ $(document).ready(function () {
             $('#PasswordErrorField').removeClass("d-none");
             return false;
         } else {
-            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()])[A-Za-z\d@$!%*?&#^()]{8,}$/;
             if (regex.test($('#Password').val())) {
                 $('#PasswordErrorField').addClass("d-none");
                 return true;

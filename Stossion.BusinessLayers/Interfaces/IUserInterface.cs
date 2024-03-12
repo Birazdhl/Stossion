@@ -11,7 +11,7 @@ namespace Stossion.BusinessLayers.Interfaces
 {
     public interface IUserInterface
     {
-        Task<GeneralResponse> CreateUser(RegisterViewModel model);
+        Task<LoginResponse> CreateUser(RegisterViewModel model);
         Task<LoginResponse> LoginUser(LoginViewModel model);
         Task<LoginResponse> Refresh(RefreshTokenViewModel requestToken);
         StossionUser? GetUserDetails();

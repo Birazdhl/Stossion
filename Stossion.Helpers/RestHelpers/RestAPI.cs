@@ -12,18 +12,18 @@ using System.Threading.Tasks;
 
 namespace Stossion.Helpers.RestHelpers
 {
-    public  class RestAPI()
+    public class RestAPI()
     {
-		//string Controller, string? MethodName = null, string? host = null, string? paramName = null, string? param = null
+        //string Controller, string? MethodName = null, string? host = null, string? paramName = null, string? param = null
 
-		public static async Task<ApiResponse> Get(ApiGetRequest request)
+        public static async Task<ApiResponse> Get(ApiGetRequest request)
         {
             try
             {
                 var header = string.Empty;
-				var result = new ApiResponse();
+                var result = new ApiResponse();
 
-				if (String.IsNullOrEmpty(request.MethodName))
+                if (String.IsNullOrEmpty(request.MethodName))
                 {
                     header = request.Controller;
                 }
@@ -44,29 +44,29 @@ namespace Stossion.Helpers.RestHelpers
                     {
                         if (request.headers != null && request?.headers.Count() > 0)
                         {
-							foreach (var item in request.headers)
-							{
-								foreach (var pair in item)
-								{
-									client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(pair.Key, pair.Value);
+                            foreach (var item in request.headers)
+                            {
+                                foreach (var pair in item)
+                                {
+                                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(pair.Key, pair.Value);
 
-								}
-							}
-						}
-						
+                                }
+                            }
+                        }
 
-						HttpResponseMessage response = await client.GetAsync(url);
+
+                        HttpResponseMessage response = await client.GetAsync(url);
                         if (response.IsSuccessStatusCode)
                         {
-							result.IsSuccess = response.IsSuccessStatusCode;
-							result.StatusCode = response.StatusCode;
-							result.result = await response.Content.ReadAsStringAsync();							
+                            result.IsSuccess = response.IsSuccessStatusCode;
+                            result.StatusCode = response.StatusCode;
+                            result.result = await response.Content.ReadAsStringAsync();
                         }
                         else
                         {
-							result.IsSuccess = response.IsSuccessStatusCode;
-							result.StatusCode = response.StatusCode;
-						}
+                            result.IsSuccess = response.IsSuccessStatusCode;
+                            result.StatusCode = response.StatusCode;
+                        }
                     }
                 }
 
@@ -74,12 +74,12 @@ namespace Stossion.Helpers.RestHelpers
             }
             catch (Exception ex)
             {
-				return new ApiResponse()
-				{
-					IsSuccess = false,
-					StatusCode = HttpStatusCode.ExpectationFailed
-				};
-			}
+                return new ApiResponse()
+                {
+                    IsSuccess = false,
+                    StatusCode = HttpStatusCode.ExpectationFailed
+                };
+            }
         }
 
         public static async Task<ApiResponse> Post<X>(ApiPostRequest<X> request)
@@ -107,12 +107,17 @@ namespace Stossion.Helpers.RestHelpers
                         {
                             foreach (var pair in item)
                             {
-								client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(pair.Key, pair.Value);
+                                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(pair.Key, pair.Value);
 
-							}
+                            }
+                        }
+
+                        StringContent? content = null;
+                        
+                        if (request.data != null) { 
+						    content = new StringContent(JsonConvert.SerializeObject(request.data), Encoding.UTF8, "application/json");
 						}
-
-						HttpResponseMessage response = await client.PostAsJsonAsync(url, request.data);
+						HttpResponseMessage response = await client.PostAsync(url, content);
                         if (response.IsSuccessStatusCode)
                         {
                             result.IsSuccess = response.IsSuccessStatusCode;

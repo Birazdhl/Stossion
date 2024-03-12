@@ -25,34 +25,54 @@ namespace Stossion.BusinessLayers.Services
         IHttpContextAccessor _httpContextAccessor,
         StossionDbContext _context,
         IConfiguration _config,
-        ITokenInterface _tokenRepository) : IUserInterface
+        ITokenInterface _tokenRepository,
+        ICountryInterface _countryInterface) : IUserInterface
     {
-        public async Task<GeneralResponse> CreateUser(RegisterViewModel model)
+        public async Task<LoginResponse> CreateUser(RegisterViewModel model)
         {
-                if (model is null) return new GeneralResponse() { flag = false, message = "Model is empty" };
+                if (model is null) return new LoginResponse() { flag = false, message = "Value is empty" };
+                int countryId = 0 ;
+                if (!string.IsNullOrEmpty(model.Country))
+                {
+                    countryId = _countryInterface.GetCountryBySymbol(model.Country).Id;
+                }
                 var newUser = new StossionUser()
                 {
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Birthday = model.Birthday,
                     GenderId = model.Gender,
-                    CountryId = model.Country,
+                    CountryId = countryId,
                     Email = model.Email,
                     PasswordHash = model.Password,
                     UserName = model.UserName,
                     PhoneNumber = model.PhoneNumber,
                 };
+
+                if (string.IsNullOrEmpty(model.FirstName) ||
+					string.IsNullOrEmpty(model.Birthday.ToString()) ||
+					(model.Gender == 0) ||
+					string.IsNullOrEmpty(model.Country) ||
+					string.IsNullOrEmpty(model.Email) ||
+					string.IsNullOrEmpty(model.Password) ||
+					string.IsNullOrEmpty(model.UserName)) {
+                    return new LoginResponse() { flag = false, token = null!, message = "Inavalid! Model State" };
+                }
+                
                 var user = await _userManager.FindByEmailAsync(newUser.Email);
-                if (user is not null) return new GeneralResponse() { flag = false, message = "User with this Email Id registered already" };
+                if (user is not null) return new LoginResponse() { flag = false, token = null!, message = "Email Id already registered" };
 
-                var getUserByUsername =  _userManager.Users.FirstOrDefault(u => u.UserName == model.UserName);
-                if (getUserByUsername is not null) return new GeneralResponse() { flag = false, message = "User with this Username registered already" };
+			    var getUserByUsername =  _userManager.Users.FirstOrDefault(u => u.UserName == model.UserName);
+                if (getUserByUsername is not null) return new LoginResponse() { flag = false, message = "User with this Username registered already" };
 
-                var getUserByPhoneNumber =  _userManager.Users.FirstOrDefault(u => u.PhoneNumber == model.PhoneNumber);
-                if (getUserByPhoneNumber is not null) return new GeneralResponse() { flag = false, message = "User with this Phone No. registered already" };
-
+                if (!string.IsNullOrEmpty(model.PhoneNumber))
+                {
+                     var getUserByPhoneNumber =  _userManager.Users.FirstOrDefault(u => u.PhoneNumber == model.PhoneNumber);
+                    if (getUserByPhoneNumber is not null) return new LoginResponse() { flag = false, message = "User with this Phone No. registered already" };
+                }
+               
                 var createUser = await _userManager.CreateAsync(newUser!, model.Password);
-                if (!createUser.Succeeded) return new GeneralResponse() { flag = false, message = createUser.Errors.First().Description };
+                if (!createUser.Succeeded) return new LoginResponse() { flag = false, message = createUser.Errors.First().Description };
 
                 //Assign Default Role : Admin to first registrar; rest is user
                 var checkAdmin = await _roleManager.FindByNameAsync("Admin");
@@ -60,7 +80,7 @@ namespace Stossion.BusinessLayers.Services
                 {
                     await _roleManager.CreateAsync(new IdentityRole() { Name = "Admin" });
                     await _userManager.AddToRoleAsync(newUser, "Admin");
-                    return new GeneralResponse() { flag = true, message = "Account Created" };
+                     return await _tokenRepository.GenerateAndReturnToken(model.UserName);
                 }
                 else
                 {
@@ -69,8 +89,8 @@ namespace Stossion.BusinessLayers.Services
                         await _roleManager.CreateAsync(new IdentityRole() { Name = "User" });
 
                     await _userManager.AddToRoleAsync(newUser, "User");
-                    return new GeneralResponse() { flag = true, message = "Account Created" };
-                }
+				    return await _tokenRepository.GenerateAndReturnToken(model.UserName);
+			}
         }
 
         public async Task<LoginResponse> LoginUser(LoginViewModel model)

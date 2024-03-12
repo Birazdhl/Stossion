@@ -11,5 +11,7 @@ namespace Stossion.BusinessLayers.Interfaces
     {
         Task<string> UpdateCountriesList();
         Task<List<Country>> GetCountryList();
+        Country GetCountryById(int id);
+		Country GetCountryBySymbol(string id);
 	}
 }

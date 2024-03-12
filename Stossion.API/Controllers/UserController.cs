@@ -15,6 +15,7 @@ namespace Stossion.API.Controllers
     public class UserController(IUserInterface userInterface) : ControllerBase
     {
         [HttpPost]
+        [AllowAnonymous]
         [Route("Register")]
         public async Task<IActionResult> RegisterUser(RegisterViewModel model)
         {
