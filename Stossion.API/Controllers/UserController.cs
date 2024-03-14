@@ -55,5 +55,13 @@ namespace Stossion.API.Controllers
             return Ok("Logged Out");
 		}
 
+		[HttpPost]
+		[Route("SingInEmail")]
+		public async Task<IActionResult> SingInEmail([FromBody] string email)
+		{
+			var response = await userInterface.SingInEmail(email);
+			return Ok(response);
+		}
+
 	}
 }

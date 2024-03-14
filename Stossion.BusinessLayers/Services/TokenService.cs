@@ -98,9 +98,21 @@ namespace Stossion.BusinessLayers.Services
 			return Task.FromResult(result);
 		}
 
-		public async Task<LoginResponse> GenerateAndReturnToken(string userName)
+		public async Task<LoginResponse> GenerateAndReturnToken(string userName, bool isEmai = false)
 		{
-			var getUser = _userManager.Users.FirstOrDefault(u => u.UserName == userName);
+			StossionUser getUser = new StossionUser();
+			if (isEmai)
+			{
+				getUser = _userManager.Users.FirstOrDefault(u => u.Email == userName) ?? new StossionUser();
+				if (getUser == null)
+				{
+					return new LoginResponse() { flag = true, token = null, refreshToken = null, message = "Email not registered" };
+				}
+			}
+			else
+			{
+				getUser = _userManager.Users.FirstOrDefault(u => u.UserName == userName) ?? new StossionUser();
+			}
 			var getUserRole = await _userManager.GetRolesAsync(getUser);
 
 			var userSession = new UserSession()

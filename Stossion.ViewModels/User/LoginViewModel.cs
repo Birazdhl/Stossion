@@ -16,4 +16,9 @@ namespace Stossion.ViewModels.User
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
+
+    public class SingInEmail
+    {
+        public string email { get; set; }
+    }
 }

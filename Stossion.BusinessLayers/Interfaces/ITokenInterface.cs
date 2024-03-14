@@ -15,7 +15,7 @@ namespace Stossion.BusinessLayers.Interfaces
 		bool ValidateToken(string refreshToken);
 		Task Create(RefreshToken refreshToken);
 		Task<RefreshToken> GetByToken(string token);
-		Task<LoginResponse> GenerateAndReturnToken(string userName);
+		Task<LoginResponse> GenerateAndReturnToken(string userName, bool isEmail = false);
 		Task Delete(Guid id);
 	}
 }

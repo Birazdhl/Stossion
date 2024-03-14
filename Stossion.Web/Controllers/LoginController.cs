@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +9,8 @@ using Stossion.ViewModels.User;
 using Stossion.Web.Models;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Stossion.Web.Controllers
 {
@@ -74,5 +78,47 @@ namespace Stossion.Web.Controllers
 			return Ok(result);
 		}
 
+		public IActionResult GoogleSignIn()
+		{
+			var header = configuration.GetValue<string>("Jwt:Audience");
+			var services = Url.Action("GoogleSignInCallback");
+			var url = header + services;
+			var properties = new AuthenticationProperties
+			{
+				RedirectUri = url
+			};
+
+			return Challenge(properties, "Google");
+		}
+
+		public async Task<IActionResult> GoogleSignInCallback()
+		{
+			var authenticationResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			if (!authenticationResult.Succeeded)
+			{
+				// Handle failed authentication
+				return RedirectToAction("Login");
+			}
+
+			// Retrieve user's Gmail name
+			var gmailName = authenticationResult.Principal.FindFirst(ClaimTypes.Email)?.Value;
+
+			// Call external API to get token, flag, and claims based on username and password
+			var response = await StossionPost("User", "SingInEmail", gmailName);
+
+			var result = JsonConvert.DeserializeObject<LoginResponse>(response.result);
+
+			if (result != null && result.flag)
+			{
+				if (!String.IsNullOrEmpty(result.token))
+				{
+					HttpContext.Response.Cookies.Append("AuthorizationToken", result.token);
+				}
+				// Store the token securely (e.g., in a secure cookie or session)
+
+			}
+
+			return Ok(result);
+		}
 	}
 }

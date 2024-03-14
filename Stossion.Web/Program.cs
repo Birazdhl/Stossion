@@ -16,6 +16,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication( options => {
 	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
@@ -29,7 +30,14 @@ builder.Services.AddAuthentication( options => {
 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
 		ClockSkew = TimeSpan.Zero
 	};
-});
+})
+.AddGoogle(options =>
+{
+	options.ClientId = builder.Configuration["Google:ClientId"];
+	options.ClientSecret = builder.Configuration["Google:ClientSecret"];
+}).AddCookie();
+
+
 
 var app = builder.Build();
 

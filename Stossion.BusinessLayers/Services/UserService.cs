@@ -151,5 +151,19 @@ namespace Stossion.BusinessLayers.Services
 			_tokenRepository.Delete(id);
             return Task.CompletedTask;
 		}
+
+		public async Task<LoginResponse> SingInEmail(string email)
+		{
+			if (String.IsNullOrEmpty(email))
+				return new LoginResponse() { flag = false, token = null!, message = "Email Id is Empty" };
+
+			var getUser = _userManager.Users.FirstOrDefault(u => u.Email == email);
+			if (getUser is null)
+				return new LoginResponse() { flag = false, token = null!, message = "Email is not registered!" };
+
+
+			return await _tokenRepository.GenerateAndReturnToken(email,true);
+
+		}
 	}
 }
