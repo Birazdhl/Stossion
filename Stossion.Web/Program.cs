@@ -35,6 +35,11 @@ builder.Services.AddAuthentication( options => {
 {
 	options.ClientId = builder.Configuration["Google:ClientId"];
 	options.ClientSecret = builder.Configuration["Google:ClientSecret"];
+    options.Events.OnRedirectToAuthorizationEndpoint = context =>
+    {
+        context.Response.Redirect(context.RedirectUri + "&prompt=consent");
+        return Task.CompletedTask;
+    };
 }).AddCookie();
 
 

@@ -27,10 +27,10 @@ namespace Stossion.Web.Controllers
 				return View();
 			}
 			var authenticationResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-			if (authenticationResult.Succeeded)
-			{
-				return RedirectToAction("Index", "Home");
-			}
+			//if (authenticationResult.Succeeded)
+			//{
+			//	return RedirectToAction("Index", "Home");
+			//}
 			if (User.Identity != null && User.Identity.IsAuthenticated)
 			{
 				return RedirectToAction("Index", "Home");
@@ -134,7 +134,7 @@ namespace Stossion.Web.Controllers
 			{
 				foreach (var cookie in Request.Cookies.Keys)
 				{
-					Response.Cookies.Delete(cookie);
+                    Response.Cookies.Delete(cookie);
 				}
 				TempData["EmailNotregistered"] = "Invalid";
 			}
