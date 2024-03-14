@@ -370,6 +370,30 @@
         }
     }
 
+    if ($("#emailInvalid").text() == "Invalid") {
+        swal({
+            title: 'Email Not Registered',
+            html: `
+           <div>
+                <p>The email address is not registered into Stossion. </p>
+                <br>
+                <p>Please register it to use gmail login.(It is a one time process)</p>
+           </div>
+        `,
+            showCancelButton: true,
+            showCloseButton: true,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            cancelButtonText: 'Ok',
+            preConfirm: function () {
+                resolve()
+            }
+        }).then(function () {
+
+        }).catch(swal.noop);
+    }
    
 });
 

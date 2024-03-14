@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Stossion.Web.Controllers
 {
@@ -18,8 +19,18 @@ namespace Stossion.Web.Controllers
     public class LoginController(IConfiguration configuration, IHttpContextAccessor contextAccessor) : BaseController(configuration, contextAccessor)
     {
         
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+			if (!String.IsNullOrEmpty(TempData["EmailNotregistered"]?.ToString()) && TempData["EmailNotregistered"]?.ToString() == "Invalid")
+			{
+				ViewBag.EmailNotregistered = "Invalid";
+				return View();
+			}
+			var authenticationResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			if (authenticationResult.Succeeded)
+			{
+				return RedirectToAction("Index", "Home");
+			}
 			if (User.Identity != null && User.Identity.IsAuthenticated)
 			{
 				return RedirectToAction("Index", "Home");
@@ -97,11 +108,13 @@ namespace Stossion.Web.Controllers
 			if (!authenticationResult.Succeeded)
 			{
 				// Handle failed authentication
-				return RedirectToAction("Login");
+				return RedirectToAction("Index");
 			}
 
 			// Retrieve user's Gmail name
 			var gmailName = authenticationResult.Principal.FindFirst(ClaimTypes.Email)?.Value;
+
+			var birthday = authenticationResult.Principal.FindFirst(ClaimTypes.DateOfBirth)?.Value;
 
 			// Call external API to get token, flag, and claims based on username and password
 			var response = await StossionPost("User", "SingInEmail", gmailName);
@@ -117,8 +130,16 @@ namespace Stossion.Web.Controllers
 				// Store the token securely (e.g., in a secure cookie or session)
 
 			}
+			else
+			{
+				foreach (var cookie in Request.Cookies.Keys)
+				{
+					Response.Cookies.Delete(cookie);
+				}
+				TempData["EmailNotregistered"] = "Invalid";
+			}
 
-			return Ok(result);
+			return RedirectToAction("Index");
 		}
 	}
 }

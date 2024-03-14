@@ -1,13 +1,13 @@
-﻿@{
+﻿@model string;
+@{
 	Layout = "~/Views/Shared/_MasterLayout.cshtml";
 }
 
-<!doctype html>
-<html lang="en">
-<head>
+
 	<link rel="stylesheet" href="/css/Login.css">
 	<script src="~/js/login/login.js"></script>
-</head>
+
+	<div id="emailInvalid" hidden>@ViewBag.EmailNotregistered</div>
 
 	<body class="img js-fullheight" style="background-image: url(/images/Login/bg.jpg);">
 	<section class="ftco-section">
@@ -43,12 +43,17 @@
 								<div class="w-50 text-md-right">
 									<a href="#" style="color: #fff">Forgot Password</a>
 								</div>
+								
+
 					</div>
-							<button asp-controller="Login" asp-action="GoogleSignIn">google sign in</button>
-
+							
 						</form>
-
-
+						<hr style="border-top:1px solid white" />
+						<div class="text-center">
+							<a asp-action="GoogleSignIn" asp-controller="Login" class="google-sign-in-button">
+								Log in with Google
+							</a>
+						</div>
 		      </div>
 				</div>
 			</div>
