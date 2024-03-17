@@ -17,3 +17,9 @@
 /Stossion.API/obj
 /Stossion.Web/bin/Debug/net8.0
 /Stossion.Web/obj
+/Stossion.API/bin/Release/net8.0
+/Stossion.API/Properties/PublishProfiles
+/Stossion.BusinessLayers/bin/Release/net8.0
+/Stossion.DbManagement/bin/Release/net8.0
+/Stossion.Helpers/bin/Release/net8.0
+/Stossion.Domain/bin/Release/net8.0

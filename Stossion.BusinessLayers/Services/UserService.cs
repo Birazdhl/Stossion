@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using Stossion.BusinessLayers.Interfaces;
 using Stossion.DbManagement.StossionDbManagement;
 using Stossion.Domain;
+using Stossion.Helpers.Enum;
 using Stossion.Helpers.RestHelpers;
 using Stossion.ViewModels.User;
 using System;
@@ -14,6 +15,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,16 +28,20 @@ namespace Stossion.BusinessLayers.Services
         StossionDbContext _context,
         IConfiguration _config,
         ITokenInterface _tokenRepository,
-        ICountryInterface _countryInterface) : IUserInterface
+        ICountryInterface _countryInterface,
+        IEmailSenderService emailSenderService) : IUserInterface
     {
         public async Task<LoginResponse> CreateUser(RegisterViewModel model)
         {
-                if (model is null) return new LoginResponse() { flag = false, message = "Value is empty" };
-                int countryId = 0 ;
+            try
+            {
+                if (model is null) return new LoginResponse() { flag = false, message = StossionConstants.emptyModel };
+                int countryId = 0;
                 if (!string.IsNullOrEmpty(model.Country))
                 {
                     countryId = _countryInterface.GetCountryBySymbol(model.Country).Id;
                 }
+                var verificatonToken = CreateRandomToken();
                 var newUser = new StossionUser()
                 {
                     FirstName = model.FirstName,
@@ -47,40 +53,42 @@ namespace Stossion.BusinessLayers.Services
                     PasswordHash = model.Password,
                     UserName = model.UserName,
                     PhoneNumber = model.PhoneNumber,
+                    EmailVerificationToken = verificatonToken
                 };
 
                 if (string.IsNullOrEmpty(model.FirstName) ||
-					string.IsNullOrEmpty(model.Birthday.ToString()) ||
-					(model.Gender == 0) ||
-					string.IsNullOrEmpty(model.Country) ||
-					string.IsNullOrEmpty(model.Email) ||
-					string.IsNullOrEmpty(model.Password) ||
-					string.IsNullOrEmpty(model.UserName)) {
+                    string.IsNullOrEmpty(model.Birthday.ToString()) ||
+                    (model.Gender == 0) ||
+                    string.IsNullOrEmpty(model.Country) ||
+                    string.IsNullOrEmpty(model.Email) ||
+                    string.IsNullOrEmpty(model.Password) ||
+                    string.IsNullOrEmpty(model.UserName))
+                {
                     return new LoginResponse() { flag = false, token = null!, message = "Inavalid! Model State" };
                 }
-                
-                var user = await _userManager.FindByEmailAsync(newUser.Email);
-                if (user is not null) return new LoginResponse() { flag = false, token = null!, message = "Email Id already registered" };
 
-			    var getUserByUsername =  _userManager.Users.FirstOrDefault(u => u.UserName == model.UserName);
+                var user = await _userManager.FindByEmailAsync(newUser.Email);
+                if (user is not null && user.EmailConfirmed) return new LoginResponse() { flag = false, token = null!, message = "Email Id already registered" };
+
+                var getUserByUsername = _userManager.Users.FirstOrDefault(u => u.UserName == model.UserName);
                 if (getUserByUsername is not null) return new LoginResponse() { flag = false, message = "User with this Username registered already" };
 
                 if (!string.IsNullOrEmpty(model.PhoneNumber))
                 {
-                     var getUserByPhoneNumber =  _userManager.Users.FirstOrDefault(u => u.PhoneNumber == model.PhoneNumber);
+                    var getUserByPhoneNumber = _userManager.Users.FirstOrDefault(u => u.PhoneNumber == model.PhoneNumber);
                     if (getUserByPhoneNumber is not null) return new LoginResponse() { flag = false, message = "User with this Phone No. registered already" };
                 }
-               
+
                 var createUser = await _userManager.CreateAsync(newUser!, model.Password);
                 if (!createUser.Succeeded) return new LoginResponse() { flag = false, message = createUser.Errors.First().Description };
 
                 //Assign Default Role : Admin to first registrar; rest is user
                 var checkAdmin = await _roleManager.FindByNameAsync("Admin");
+                await SendVerifiationEmail(model.Email, verificatonToken);
                 if (checkAdmin is null)
                 {
                     await _roleManager.CreateAsync(new IdentityRole() { Name = "Admin" });
                     await _userManager.AddToRoleAsync(newUser, "Admin");
-                     return await _tokenRepository.GenerateAndReturnToken(model.UserName);
                 }
                 else
                 {
@@ -89,22 +97,34 @@ namespace Stossion.BusinessLayers.Services
                         await _roleManager.CreateAsync(new IdentityRole() { Name = "User" });
 
                     await _userManager.AddToRoleAsync(newUser, "User");
-				    return await _tokenRepository.GenerateAndReturnToken(model.UserName);
-			}
+                }
+                //return await _tokenRepository.GenerateAndReturnToken(model.UserName);
+                return new LoginResponse() { flag = false, message = StossionConstants.success };
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
         public async Task<LoginResponse> LoginUser(LoginViewModel model)
         {
             if (model == null)
-                return new LoginResponse() { flag = false, token = null!, message = "Login container is empty" };
+                return new LoginResponse() { flag = false, token = null!, message = StossionConstants.emptyModel };
 
             var getUser =  _userManager.Users.FirstOrDefault(u => u.UserName == model.Username);
             if (getUser is null)
                 return new LoginResponse() { flag = false, token = null!, message = "User not found" };
 
-            bool checkUserPasswords = await _userManager.CheckPasswordAsync(getUser, model.Password);
+			bool checkUserPasswords = await _userManager.CheckPasswordAsync(getUser, model.Password);
             if (!checkUserPasswords)
                 return new LoginResponse() { flag = false, token = null!, message = "Invalid username/password" };
+
+            if (getUser.EmailConfirmed == false)
+            {
+				return new LoginResponse() { flag = false, token = null!, message = StossionConstants.unverifiedEmail };
+			}
 
             return await _tokenRepository.GenerateAndReturnToken(model.Username);
 
@@ -161,9 +181,57 @@ namespace Stossion.BusinessLayers.Services
 			if (getUser is null)
 				return new LoginResponse() { flag = false, token = null!, message = "Email is not registered!" };
 
+            if (!getUser.EmailConfirmed)
+            {
+                return new LoginResponse() { flag = false, token = null!, message = "Please Verify Email first to continue!" };
+            }
 
 			return await _tokenRepository.GenerateAndReturnToken(email,true);
 
 		}
+
+        private string CreateRandomToken()
+        {
+            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+        }
+
+        private async Task SendVerifiationEmail(string email,string token)
+        {
+            string emailMessage = _context.Templates.Where(x => x.Name == StossionConstants.VerifyEmail).FirstOrDefault()?.Value ?? string.Empty;
+            var link = _config["JWT:Audience"] + "/Link/VerifyEmail?token=" + token;
+            emailMessage = emailMessage.Replace("@verificationLink", link);
+
+		    await emailSenderService.SendEmailAsync(email, StossionConstants.emailVerificationLink, emailMessage);
+
+		}
+
+        public async Task<LoginResponse> VerifyEmail(string token)
+        {
+            try
+            {
+				var getUser = _userManager.Users.FirstOrDefault(u => u.EmailVerificationToken == token);
+				if (getUser is null)
+				{
+                    return new LoginResponse() { flag = false, token = null!, message = StossionConstants.invalidParameter };
+				}
+
+                getUser.EmailVerificationToken = string.Empty;
+				getUser.VerifyAt = DateTime.Now;
+				getUser.EmailConfirmed = true;
+                
+                _context.Users.Update(getUser);
+				await _context.SaveChangesAsync();
+
+                var login = await _tokenRepository.GenerateAndReturnToken(getUser.Email ?? string.Empty, true);
+                login.message = StossionConstants.success;
+                return login;
+			}
+            catch (Exception)
+            {
+                return new LoginResponse() { flag = false, token = null!, message = StossionConstants.internalServerError };
+            }
+			
+		}
 	}
+
 }

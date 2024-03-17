@@ -1,5 +1,6 @@
 ﻿using Stossion.DbManagement.StossionDbManagement;
 using Stossion.Domain;
+using Stossion.Helpers.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +20,27 @@ namespace Stossion.DbManagement
                 if (!context.Gender.Any())
                 {
                     // Add initial data
-                    var initialData = new List<Gender>
+                    var gender = new List<Domain.Gender>
                         {
-                            new Gender { Type = "Male" },
-                            new Gender { Type = "Female" },
-                            new Gender { Type = "Not Specified" }
+                            new Domain.Gender { Type = "Male" },
+                            new Domain.Gender { Type = "Female" },
+                            new Domain.Gender { Type = "Not Specified" }
                         };
 
-                    context.Gender.AddRange(initialData);
+                    context.Gender.AddRange(gender);
+                    context.SaveChanges();
+                }
+
+                if (!context.Templates.Any())
+                {
+                    // Add initial data
+                    var templates = new List<Templates>
+                        {
+                            new Templates { Name = StossionConstants.VerifyEmail,
+                                Value = "<html> <div> <h3>Stossion Email Verification</h3> </div> <div> <p>Please click the following link to verify your Email Address.</p> <a href=\"@verificationLink\">Verify Email Address for Stossion</a> </div> <br/> <br/> <div>Regards,</div> <div>Stossion Team</div> </html>" }
+                        };
+
+                    context.Templates.AddRange(templates);
                     context.SaveChanges();
                 }
             }

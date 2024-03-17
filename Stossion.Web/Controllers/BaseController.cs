@@ -94,5 +94,5 @@ namespace Stossion.Web.Controllers
 			var result = await RestAPI.Get(request);
 			return result;
 		}
-	}
+    }
 }

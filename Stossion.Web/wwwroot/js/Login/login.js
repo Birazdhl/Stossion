@@ -127,10 +127,12 @@
                             dataType: "json",
                             data: postData,
                             success: function (success) {
+                                debugger;
                                 // Handle the success response
-                                if (success.flag) {
-                                    var url = '/Login/Index';
-                                    window.location.href = url;
+                                if (success.message == "Success") {
+                                    var url = '/Common/ErrorMessage';
+                                    var message = "Please Verify Email first to continue";
+                                    window.location.href = url + "?message=" + message + "&userName=" + $("#Username").val();
                                     resolve();
                                 }
                                 else {

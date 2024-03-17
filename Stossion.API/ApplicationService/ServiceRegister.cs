@@ -8,11 +8,12 @@ namespace Stossion.API.ApplicationService
         public static void AddServices(this IServiceCollection service)
         {
             // Add your repository and other services here
-            service.AddScoped<IUserInterface, UserService>();
-            service.AddScoped<ICountryInterface, CountryService>();
-			service.AddScoped<ITokenInterface, TokenService>();
+            service.AddTransient<IUserInterface, UserService>();
+            service.AddTransient<ICountryInterface, CountryService>();
+			service.AddTransient<ITokenInterface, TokenService>();
             service.AddScoped<IDapperDbContext, DapperDbContext>();
-			service.AddScoped<IDapperInterface, DapperRepository>();
+			service.AddTransient<IDapperInterface, DapperRepository>();
+			service.AddTransient<IEmailSenderService, EmailSenderService>();
 
 
 		}

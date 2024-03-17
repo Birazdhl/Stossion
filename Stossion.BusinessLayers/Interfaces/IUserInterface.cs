@@ -17,5 +17,6 @@ namespace Stossion.BusinessLayers.Interfaces
         StossionUser? GetUserDetails();
         Task Logout(Guid id);
         Task<LoginResponse> SingInEmail(string email);
+        Task<LoginResponse> VerifyEmail(string token);
 	}
 }

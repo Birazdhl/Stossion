@@ -98,10 +98,10 @@ namespace Stossion.BusinessLayers.Services
 			return Task.FromResult(result);
 		}
 
-		public async Task<LoginResponse> GenerateAndReturnToken(string userName, bool isEmai = false)
+		public async Task<LoginResponse> GenerateAndReturnToken(string userName, bool isEmail = false)
 		{
 			StossionUser getUser = new StossionUser();
-			if (isEmai)
+			if (isEmail)
 			{
 				getUser = _userManager.Users.FirstOrDefault(u => u.Email == userName) ?? new StossionUser();
 				if (getUser == null)

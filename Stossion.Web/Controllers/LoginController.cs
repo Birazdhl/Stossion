@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
+using Stossion.Helpers.Enum;
 
 namespace Stossion.Web.Controllers
 {
@@ -20,12 +21,13 @@ namespace Stossion.Web.Controllers
     {
         
         public async Task<IActionResult> Index()
-        {
+       {
 			if (!String.IsNullOrEmpty(TempData["EmailNotregistered"]?.ToString()) && TempData["EmailNotregistered"]?.ToString() == "Invalid")
 			{
 				ViewBag.EmailNotregistered = "Invalid";
 				return View();
 			}
+			
 			var authenticationResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 			//if (authenticationResult.Succeeded)
 			//{
@@ -38,6 +40,16 @@ namespace Stossion.Web.Controllers
 			return View();
         }
 
+		public IActionResult UnverifiedEmail(string userName)
+		{
+			if (String.IsNullOrEmpty(userName))
+			{
+				return RedirectToAction("Index");
+            }
+            ViewBag.UserName = userName;
+            return View("~/Views/Home/ErrorMessage.cshtml", "Please Verify Email first to continue");
+        }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -46,7 +58,12 @@ namespace Stossion.Web.Controllers
 
             var result = JsonConvert.DeserializeObject<LoginResponse>(response.result);
 
-			if (result.flag)
+            if (result?.message == StossionConstants.unverifiedEmail)
+            {
+				ViewBag.UserName = model.Username;
+                return RedirectToAction("ErrorMessage", "Common", new { message = "Invalid Email Verification Token" });
+            }
+            if (result.flag)
             {
                 // Store the token securely (e.g., in a secure cookie or session)
                 HttpContext.Response.Cookies.Append("AuthorizationToken", result.token);
@@ -79,13 +96,6 @@ namespace Stossion.Web.Controllers
 		{
 			var response = await StossionPost("User", "Register", model);
 			var result = JsonConvert.DeserializeObject<LoginResponse>(response.result);
-			if (result != null) {
-				if (result.flag)
-				{
-					// Store the token securely (e.g., in a secure cookie or session)
-					HttpContext.Response.Cookies.Append("AuthorizationToken", result.token ?? string.Empty);
-				}
-			}
 			return Ok(result);
 		}
 
@@ -141,5 +151,26 @@ namespace Stossion.Web.Controllers
 
 			return RedirectToAction("Index");
 		}
-	}
+
+
+		public async Task<IActionResult> VerifyEmail(string token)
+		{
+			var response = await StossionPost("User", "VerifyEmail", token);
+			if (response.IsSuccess)
+			{
+				
+                var result = JsonConvert.DeserializeObject<LoginResponse>(response.result);
+				if (result != null && (!String.IsNullOrEmpty(result.message) && !String.IsNullOrEmpty(result.token)))
+                {
+                    if (result.message == StossionConstants.invalidParameter)
+                    {
+                        return RedirectToAction("ErrorMessage", "Common", new { message = "Invalid Email Verification Token" });
+                    }
+                    HttpContext.Response.Cookies.Append("AuthorizationToken", result.token);
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            return RedirectToAction("Index");
+        }
+    }
 }

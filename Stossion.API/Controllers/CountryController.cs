@@ -8,6 +8,7 @@ namespace Stossion.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class CountryController(ICountryInterface _countryInterface) : ControllerBase
     {
         [HttpGet]

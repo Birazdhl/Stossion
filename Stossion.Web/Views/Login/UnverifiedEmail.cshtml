@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+}
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="~/css/site.css" rel="stylesheet" />
+
+</head>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Stossion.Web</a>
+            <div class="collapse navbar-collapse d-flex justify-content-between">
+                <div class="navbar-nav">
+                    <!-- Empty div to push username and logout button to the right -->
+                </div>
+                <div class="navbar-nav">
+                    <span>@ViewBag.UserName</span>
+                    <a asp-controller="Login" asp-action="Index" class="fa fa-sign-out logout" style="font-size:24px; margin-left: 10px;"></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <h3>Please Verify Email first to continue</h3>
+</header>

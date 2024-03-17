@@ -15,9 +15,11 @@ namespace Stossion.DbManagement.StossionDbManagement
 
         [ForeignKey("Student")]
         public int GenderId { get; set; }
-
         public DateTime Birthday { get; set; }
-        public Country Country { get; set; }
-        public Gender Gender { get; set; }
-    }
+        public string? EmailVerificationToken { get; set; }
+        public DateTime? VerifyAt { get; set; }
+
+		public virtual Country Country { get; set; }
+		public virtual Gender Gender { get; set; }
+	}
 }

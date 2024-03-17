@@ -27,5 +27,15 @@ namespace Stossion.Web.Controllers
 			}
 			return new List<CountryViewModel>();
 		}
-	}
+
+        [AllowAnonymous]
+        public IActionResult ErrorMessage(string message,string userName)
+        {
+			if (String.IsNullOrEmpty(userName))
+			{
+				ViewBag.UserName = userName;
+			}
+            return View("~/Views/Home/ErrorMessage.cshtml", message);
+        }
+    }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Stossion.BusinessLayers.Interfaces;
 using Stossion.Domain;
+using Stossion.Helpers.Enum;
 using Stossion.ViewModels.User;
 using System.Security.Claims;
 
@@ -12,7 +13,7 @@ namespace Stossion.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(IUserInterface userInterface) : ControllerBase
+    public class UserController(IUserInterface userInterface) : BaseController
     {
         [HttpPost]
         [AllowAnonymous]
@@ -63,5 +64,20 @@ namespace Stossion.API.Controllers
 			return Ok(response);
 		}
 
+        [HttpPost]
+        [Route("VerifyEmail")]
+        public async Task<IActionResult> VerifyEmail([FromBody] string token)
+        {
+            try
+            {
+               var result =  await userInterface.VerifyEmail(token);
+                return Ok(result);
+			}
+			catch (Exception)
+            {
+				return Ok(StossionConstants.internalServerError);
+			}
+
+		}
 	}
 }
