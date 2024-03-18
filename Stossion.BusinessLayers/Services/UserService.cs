@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
@@ -232,6 +233,71 @@ namespace Stossion.BusinessLayers.Services
             }
 			
 		}
+
+        public async Task<string> ChangePassword(ChangePasswordViewModel model, string? userName)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(model.NewPassword)
+                || String.IsNullOrEmpty(model.OldPassword) ||
+                    String.IsNullOrEmpty(model.ConfirmNewPassowrd) ||
+                    String.IsNullOrEmpty(userName))
+                {
+                    return "Invalid Model";
+                }
+
+                if (model.NewPassword != model.ConfirmNewPassowrd)
+                {
+                    return ("Password Doesnt Match");
+                }
+
+                if (model.NewPassword == model.OldPassword)
+                {
+                    return ("Same Password");
+                }
+
+                var getUser = _userManager.Users.FirstOrDefault(u => u.UserName == userName);
+
+                if (getUser is null)
+                    return ("User Not Found");
+
+                var checkPassword = await _userManager.CheckPasswordAsync(getUser, model.OldPassword);
+                if (!checkPassword)
+                {
+                    return "Invalid Password";
+                }
+
+                var changeUserPassword = await _userManager.ChangePasswordAsync(getUser, model.OldPassword, model.NewPassword);
+                if (changeUserPassword.Succeeded)
+                {
+
+                    getUser.CreatedAt = DateTime.UtcNow;
+                    getUser.ModifiedAt = DateTime.Now;
+                    await _context.SaveChangesAsync();
+                    return StossionConstants.success;
+                }
+                else
+                {
+                    foreach (var item in changeUserPassword.Errors)
+                    {
+                        _context.ErrorLogs.Add(new ErrorLog
+                        {
+                            Message = item.Description,
+                            StackTrace = item.Code,
+                            DateTime = DateTime.Now,
+                            Username = getUser.UserName ?? string.Empty,
+                        });
+                    }
+                    return "Failed to change Password";
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
 	}
 
 }

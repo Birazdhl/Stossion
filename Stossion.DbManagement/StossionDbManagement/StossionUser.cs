@@ -19,7 +19,10 @@ namespace Stossion.DbManagement.StossionDbManagement
         public string? EmailVerificationToken { get; set; }
         public DateTime? VerifyAt { get; set; }
 
-		public virtual Country Country { get; set; }
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime ModifiedAt { get; set; }
+        public virtual Country Country { get; set; }
 		public virtual Gender Gender { get; set; }
 	}
 }

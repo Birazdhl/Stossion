@@ -79,5 +79,15 @@ namespace Stossion.API.Controllers
 			}
 
 		}
+
+        [HttpPost]
+        [Authorize]
+        [Route("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            var result = await userInterface.ChangePassword(model, User?.Identity?.Name);
+            return Ok(result);
+
+        }
 	}
 }

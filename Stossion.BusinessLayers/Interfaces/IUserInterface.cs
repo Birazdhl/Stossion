@@ -18,5 +18,7 @@ namespace Stossion.BusinessLayers.Interfaces
         Task Logout(Guid id);
         Task<LoginResponse> SingInEmail(string email);
         Task<LoginResponse> VerifyEmail(string token);
-	}
+        Task<string> ChangePassword(ChangePasswordViewModel model, string? userName);
+
+    }
 }
