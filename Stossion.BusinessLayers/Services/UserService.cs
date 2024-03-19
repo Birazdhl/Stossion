@@ -299,19 +299,23 @@ namespace Stossion.BusinessLayers.Services
             }
         }
 
-        public async Task<string> ForgetPasswordVerificationLink(ForgetPasswordViewModel model)
+        public async Task<string> ForgetPasswordVerificationLink(string username)
         {
             try
             {
-                var getUser = _userManager.Users.FirstOrDefault(u => u.UserName == model.Username);
+                if (String.IsNullOrEmpty(username))
+                {
+                    return "Username Empty";
+                }
+                var getUser = _userManager.Users.FirstOrDefault(u => u.UserName == username);
                 if (getUser == null || !(await _userManager.IsEmailConfirmedAsync(getUser)))
                 {
-                    return StossionConstants.noContent;
+                    return "Username not registered";
                 }
 
                 var token = await _userManager.GeneratePasswordResetTokenAsync(getUser);
 
-                string emailMessage = _context.Templates.Where(x => x.Name == StossionConstants.VerifyEmail).FirstOrDefault()?.Value ?? string.Empty;
+                string emailMessage = _context.Templates.Where(x => x.Name == StossionConstants.forgetPasswordLink).FirstOrDefault()?.Value ?? string.Empty;
                 var link = _config["JWT:Audience"] + "/Login/ResetPassword?token=" + token;
                 emailMessage = emailMessage.Replace("@forgetPasswordLink", link);
 
@@ -319,7 +323,7 @@ namespace Stossion.BusinessLayers.Services
 
                 await emailSenderService.SendEmailAsync(getUser.Email, StossionConstants.forgetPasswordLink, emailMessage);
 
-                return token;
+                return StossionConstants.success;
             }
             catch (Exception ex)
             {
@@ -330,6 +334,10 @@ namespace Stossion.BusinessLayers.Services
 
         public async Task<string> ResetPassword(ForgetPasswordViewModel model)
         {
+            if (model.Password != model.ConfirmPassword)
+            {
+                return "Password Dosen't Match";
+            }
             var getUser = _userManager.Users.FirstOrDefault(u => u.UserName == model.Username);
             if (getUser == null)
             {

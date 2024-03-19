@@ -19,7 +19,7 @@ namespace Stossion.BusinessLayers.Interfaces
         Task<LoginResponse> SingInEmail(string email);
         Task<LoginResponse> VerifyEmail(string token);
         Task<string> ChangePassword(ChangePasswordViewModel model, string? userName);
-        Task<string> ForgetPasswordVerificationLink(ForgetPasswordViewModel model);
+        Task<string> ForgetPasswordVerificationLink(string username);
         Task<string> ResetPassword(ForgetPasswordViewModel model);
     }
 }

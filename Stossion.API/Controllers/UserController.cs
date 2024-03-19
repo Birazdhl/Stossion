@@ -93,9 +93,9 @@ namespace Stossion.API.Controllers
 
         [HttpPost]
         [Route("ForgetPasswordVerificationLink")]
-        public async Task<IActionResult> ForgetPasswordVerificationLink(ForgetPasswordViewModel model)
+        public async Task<IActionResult> ForgetPasswordVerificationLink([FromBody] string username)
         {
-            var result = await userInterface.ForgetPasswordVerificationLink(model);
+            var result = await userInterface.ForgetPasswordVerificationLink(username);
             return Ok(result);
         }
 

@@ -396,6 +396,39 @@
 
         }).catch(swal.noop);
     }
+
+    $("#forgotPassword").on('click', function () {
+
+        var userName = $("#forgetPasswordUserName").val();
+        if (userName == null || userName == '') {
+            toastr.info("Please enter username");
+            return false;
+        }
+
+        $.ajax({
+            url: "/Login/EmailVerificationLink?username=" + $("#forgetPasswordUserName").val(), // Replace with your controller and action
+            type: "GET",
+            success: function (data) {
+                // Handle the success response
+                console.log(data);
+                if (data == "Success") {
+                    var text = "The password reset link is sent to the email associated with username: " + userName;
+                    $("#emailBox").hide();
+                    $("#emailSent").show();
+                    $("#emailSentText").text(text);
+                }
+                else {
+                    toastr.error(success)
+                }
+                reject();
+            },
+            error: function (error) {
+                toastr.error("Error")
+                // Handle errors
+                console.error(error);
+            }
+        });
+    });
    
 });
 

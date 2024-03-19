@@ -31,3 +31,7 @@ body {
 .swal-button--confirm {
     color: green
 }
+
+.textBox {
+    border-radius: 25px;
+}

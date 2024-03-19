@@ -1,17 +1,10 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using Stossion.Helpers.RestHelpers;
 using Stossion.ViewModels.User;
-using Stossion.Web.Models;
-using System.Diagnostics;
-using System.Reflection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.IdentityModel.Tokens;
 using Stossion.Helpers.Enum;
 
 namespace Stossion.Web.Controllers
@@ -45,10 +38,16 @@ namespace Stossion.Web.Controllers
 		//	if (String.IsNullOrEmpty(userName))
 		//	{
 		//		return RedirectToAction("Index");
-  //          }
-  //          ViewBag.UserName = userName;
-  //          return View("~/Views/Home/ErrorMessage.cshtml", "Please Verify Email first to continue");
-  //      }
+		//          }
+		//          ViewBag.UserName = userName;
+		//          return View("~/Views/Home/ErrorMessage.cshtml", "Please Verify Email first to continue");
+		//      }
+
+		[HttpGet]
+		public IActionResult ForgetPassword()
+		{
+			return View();
+		}
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -172,5 +171,25 @@ namespace Stossion.Web.Controllers
             }
             return RedirectToAction("Index");
         }
+
+		[HttpGet]
+		public async Task<IActionResult> EmailVerificationLink(string username)
+		{
+			var response = await StossionPost("User", "ForgetPasswordVerificationLink", username);
+			var message = response.result.ToString();
+			return Ok(message);
+        }
+
+		[HttpGet]
+		public async Task<IActionResult> ResetPassowrd(string token, string username)
+		{
+			ForgetPasswordViewModel model = new ForgetPasswordViewModel()
+			{
+				Username = username,
+				Token = token
+			};
+
+            return View(model);
+		}
     }
 }
