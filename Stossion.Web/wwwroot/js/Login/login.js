@@ -429,6 +429,50 @@
             }
         });
     });
+
+    $("#resetPasswordButton").on('click', function () {
+
+        var postData = {
+            "Token": $("#token").val(),
+            "Username": $("#resetUsername").val(),
+            "Password": $("#resetNewPassword").val(),
+            "ConfirmPassword": $("#resetConfirmNewPassword").val()
+        }
+
+        if ($("#resetNewPassword").val() == null || $("#resetNewPassword").val() == '') {
+            toastr.error("Please enter password");
+            return false;
+        }
+
+        if ($("#resetNewPassword").val() != $("#resetConfirmNewPassword").val()) {
+            toastr.error("Password dosen't match");
+            return false;
+        }
+     
+      
+        $.ajax({
+            url: "/Login/ResetPassword", // Replace with your controller and action
+            type: "POST",
+            data: postData,
+            success: function (data) {
+                // Handle the success response
+                if (data == "Success") {
+                    toastr.success("Password Changed Successfully!!!")
+                    setTimeout(function () {
+                        window.location.href = "/Login/Index";
+                    }, 1000);
+                }
+                else {
+                    toastr.error(success)
+                }
+            },
+            error: function (error) {
+                toastr.error("Error")
+                // Handle errors
+                console.error(error);
+            }
+        });
+    });
    
 });
 

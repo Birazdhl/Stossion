@@ -24,5 +24,6 @@ namespace Stossion.ViewModels.User
 
         [Required]
         public string? Token { get; set; }
+
     }
 }

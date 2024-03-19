@@ -181,7 +181,7 @@ namespace Stossion.Web.Controllers
         }
 
 		[HttpGet]
-		public async Task<IActionResult> ResetPassowrd(string token, string username)
+		public IActionResult ResetPassword(string token, string username)
 		{
 			ForgetPasswordViewModel model = new ForgetPasswordViewModel()
 			{
@@ -191,5 +191,12 @@ namespace Stossion.Web.Controllers
 
             return View(model);
 		}
+
+		[HttpPost]
+		public async Task<IActionResult> ResetPassword(ForgetPasswordViewModel model)
+		{
+			var response = await StossionPost("User", "ResetPassword", model);
+			return Ok("Success");
+        }
     }
 }

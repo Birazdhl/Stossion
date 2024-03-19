@@ -310,13 +310,13 @@ namespace Stossion.BusinessLayers.Services
                 var getUser = _userManager.Users.FirstOrDefault(u => u.UserName == username);
                 if (getUser == null || !(await _userManager.IsEmailConfirmedAsync(getUser)))
                 {
-                    return "Username not registered";
+                    return "Username/Email not registered";
                 }
 
                 var token = await _userManager.GeneratePasswordResetTokenAsync(getUser);
 
-                string emailMessage = _context.Templates.Where(x => x.Name == StossionConstants.forgetPasswordLink).FirstOrDefault()?.Value ?? string.Empty;
-                var link = _config["JWT:Audience"] + "/Login/ResetPassword?token=" + token;
+                string emailMessage = _context.Templates.Where(x => x.Name == StossionConstants.ResetPassword).FirstOrDefault()?.Value ?? string.Empty;
+                var link = _config["JWT:Audience"] + "/Login/ResetPassword?token=" + token + "&username=" + username;
                 emailMessage = emailMessage.Replace("@forgetPasswordLink", link);
 
                 if (string.IsNullOrEmpty(getUser.Email)) { return "No Email Found"; };
@@ -343,6 +343,11 @@ namespace Stossion.BusinessLayers.Services
             {
                 // Don't reveal that the user does not exist
                 return StossionConstants.noContent;
+            }
+
+            if (getUser.EmailConfirmed == false)
+            {
+                return "Email Not Verified";
             }
 
             var result = await _userManager.ResetPasswordAsync(getUser, model.Token??string.Empty, model.Password ?? string.Empty);
