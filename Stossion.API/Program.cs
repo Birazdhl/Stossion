@@ -33,7 +33,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddIdentity<StossionUser, IdentityRole>()
     .AddEntityFrameworkStores<StossionDbContext>()
     .AddSignInManager()
-    .AddRoles<IdentityRole>();
+    .AddRoles<IdentityRole>()
+    .AddDefaultTokenProviders();
 
 // JWT 
 builder.Services.AddAuthentication(options =>

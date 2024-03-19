@@ -37,7 +37,11 @@ namespace Stossion.DbManagement
                     var templates = new List<Templates>
                         {
                             new Templates { Name = StossionConstants.VerifyEmail,
-                                Value = "<html> <div> <h3>Stossion Email Verification</h3> </div> <div> <p>Please click the following link to verify your Email Address.</p> <a href=\"@verificationLink\">Verify Email Address for Stossion</a> </div> <br/> <br/> <div>Regards,</div> <div>Stossion Team</div> </html>" }
+                                Value = "<html> <div> <h3>Stossion Email Verification</h3> </div> <div> <p>Please click the following link to verify your Email Address.</p> <a href=\"@verificationLink\">Verify Email Address for Stossion</a> </div> <br/> <br/> <div>Regards,</div> <div>Stossion Team</div> </html>" },
+
+                            new Templates { Name = StossionConstants.ResetPassword,
+                                Value = "<html><div><h3>Password Reset Link</h3></div><div><p>Please click the following link to reset your Password.</p><a href=\"@forgetPasswordLink\">Password Reset Link</a></div><br/> <br/> <div>Regards,</div><div>Stossion Team</div></html>\r\n"}
+
                         };
 
                     context.Templates.AddRange(templates);

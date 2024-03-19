@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -199,7 +200,7 @@ namespace Stossion.BusinessLayers.Services
         private async Task SendVerifiationEmail(string email,string token)
         {
             string emailMessage = _context.Templates.Where(x => x.Name == StossionConstants.VerifyEmail).FirstOrDefault()?.Value ?? string.Empty;
-            var link = _config["JWT:Audience"] + "/Link/VerifyEmail?token=" + token;
+            var link = _config["JWT:Audience"] + "/Login/VerifyEmail?token=" + token;
             emailMessage = emailMessage.Replace("@verificationLink", link);
 
 		    await emailSenderService.SendEmailAsync(email, StossionConstants.emailVerificationLink, emailMessage);
@@ -298,6 +299,56 @@ namespace Stossion.BusinessLayers.Services
             }
         }
 
-	}
+        public async Task<string> ForgetPasswordVerificationLink(ForgetPasswordViewModel model)
+        {
+            try
+            {
+                var getUser = _userManager.Users.FirstOrDefault(u => u.UserName == model.Username);
+                if (getUser == null || !(await _userManager.IsEmailConfirmedAsync(getUser)))
+                {
+                    return StossionConstants.noContent;
+                }
+
+                var token = await _userManager.GeneratePasswordResetTokenAsync(getUser);
+
+                string emailMessage = _context.Templates.Where(x => x.Name == StossionConstants.VerifyEmail).FirstOrDefault()?.Value ?? string.Empty;
+                var link = _config["JWT:Audience"] + "/Login/ResetPassword?token=" + token;
+                emailMessage = emailMessage.Replace("@forgetPasswordLink", link);
+
+                if (string.IsNullOrEmpty(getUser.Email)) { return "No Email Found"; };
+
+                await emailSenderService.SendEmailAsync(getUser.Email, StossionConstants.forgetPasswordLink, emailMessage);
+
+                return token;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public async Task<string> ResetPassword(ForgetPasswordViewModel model)
+        {
+            var getUser = _userManager.Users.FirstOrDefault(u => u.UserName == model.Username);
+            if (getUser == null)
+            {
+                // Don't reveal that the user does not exist
+                return StossionConstants.noContent;
+            }
+
+            var result = await _userManager.ResetPasswordAsync(getUser, model.Token??string.Empty, model.Password ?? string.Empty);
+            if (result.Succeeded)
+            {
+                return StossionConstants.success;
+            }
+            else
+            {
+                // Handle password reset failure
+                return "Reset Password Failed!!! The reset link may be invalid or expired";
+            }
+        }
+
+    }
 
 }

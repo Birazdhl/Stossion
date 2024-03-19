@@ -40,15 +40,15 @@ namespace Stossion.Web.Controllers
 			return View();
         }
 
-		public IActionResult UnverifiedEmail(string userName)
-		{
-			if (String.IsNullOrEmpty(userName))
-			{
-				return RedirectToAction("Index");
-            }
-            ViewBag.UserName = userName;
-            return View("~/Views/Home/ErrorMessage.cshtml", "Please Verify Email first to continue");
-        }
+		//public IActionResult UnverifiedEmail(string userName)
+		//{
+		//	if (String.IsNullOrEmpty(userName))
+		//	{
+		//		return RedirectToAction("Index");
+  //          }
+  //          ViewBag.UserName = userName;
+  //          return View("~/Views/Home/ErrorMessage.cshtml", "Please Verify Email first to continue");
+  //      }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -61,7 +61,7 @@ namespace Stossion.Web.Controllers
             if (result?.message == StossionConstants.unverifiedEmail)
             {
 				ViewBag.UserName = model.Username;
-                return RedirectToAction("ErrorMessage", "Common", new { message = "Invalid Email Verification Token" });
+                return RedirectToAction("ErrorMessage", "Common", new { message = "Please Verify Email first to continue" });
             }
             if (result.flag)
             {

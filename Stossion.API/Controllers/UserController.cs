@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Stossion.BusinessLayers.Interfaces;
@@ -89,5 +90,20 @@ namespace Stossion.API.Controllers
             return Ok(result);
 
         }
-	}
+
+        [HttpPost]
+        [Route("ForgetPasswordVerificationLink")]
+        public async Task<IActionResult> ForgetPasswordVerificationLink(ForgetPasswordViewModel model)
+        {
+            var result = await userInterface.ForgetPasswordVerificationLink(model);
+            return Ok(result);
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ForgetPasswordViewModel model)
+        {
+            var result = await userInterface.ResetPassword(model);
+            return Ok(result);
+        }
+    }
 }
