@@ -1,0 +1,13 @@
+﻿@model string;
+
+@if (Model == "ChangePassword")
+{
+    @Html.Partial("PartialViews/_ChangePassword")
+    ;
+}
+else
+{
+    <h1>Else Condition</h1>
+} 
+
+<script src="~/js/home/home.js"></script>

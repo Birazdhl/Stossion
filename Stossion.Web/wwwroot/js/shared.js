@@ -35,15 +35,12 @@ function getBase64(event, callback) {
     };
 }
 
-//function getBase64(event) {
+function toggleErrorMessage(inputField, errorMessage) {
+    // Remove any existing error span
+    inputField.siblings(".errorTxt").remove();
 
-//    var file = event.target.files[0];
-//    var reader = new FileReader();
-//    reader.readAsDataURL(file);
-//    reader.onload = function () {
-//        callback(reader.result);
-//    };
-//    reader.onerror = function (error) {
-//        console.log('Error: ', error);
-//    };
-//}
+    // Add error span if error message is provided
+    if (errorMessage) {
+        inputField.after('<span class="errorTxt">' + errorMessage + '</span>');
+    }
+}

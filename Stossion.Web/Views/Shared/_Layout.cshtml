@@ -31,27 +31,23 @@
 </head>
 
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light navColor border-bottom box-shadow mb-3">
         <div class="container-fluid">
             <div class="row align-items-center w-100">
                 <div class="col-5">
-                    <a class="navbar-brand" href="/Home">Stossion.Web</a>
+                    <a asp-controller="Home" asp-action="Index"> <img class="cursorPointer" src="~/images/logos/Stoss.png" /> </a>
                 </div>
                 <div class="col-6">
                     <div class="d-flex align-items-center">
-                        @{
-                            var base64String = User.FindFirst("ProfilePicture")?.Value;
-                        }
-                        @* <img src="path_to_your_image.jpg" alt="Profile Picture" class="rounded-circle" style="width: 30px; height: 30px;"> *@
-                        <img src="data:image/png;base64,@base64String" alt="Profile Picture" class="rounded-circle" style="width: 30px; height: 30px;">
-                        <span class="ml-2">@User.Identity.Name</span>
+                        <img src="" alt="Profile Picture" class="rounded-circle" style="width: 30px; height: 30px;">
+                        <span class="ml-2 usernameMenu">@User.Identity.Name</span>
                         <div class="ml-3">
-                            <i id="submenuToggle" class="fa fa-caret-down" style="cursor: pointer;"></i>
+                            <i id="submenuToggle" class="fa fa-caret-down subMenuToogle"></i>
                             <div id="submenu" class="dropdown-menu" style="display: none;">
                                 <a class="dropdown-item" href="#">View Profile</a>
-                                <a class="dropdown-item" href="#">Change Password</a>
+                                <a class="dropdown-item" href="/Home/Menu?name=ChangePassword">Change Password</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="/Login/Logout">Logout</a>
+                                <a class="dropdown-item" id="logout" href="/Login/Logout">Logout</a>
                             </div>
                         </div>
                     </div>
@@ -64,15 +60,11 @@
 
 
 
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Stossion.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     @await RenderSectionAsync("Scripts", required: false)

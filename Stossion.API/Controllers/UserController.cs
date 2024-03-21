@@ -105,5 +105,13 @@ namespace Stossion.API.Controllers
             var result = await userInterface.ResetPassword(model);
             return Ok(result);
         }
+
+        [Authorize]
+        [HttpGet("GetProfilePicture")]
+        public async Task<string> GetProfilePicture()
+        {
+            var result = await userInterface.GetProfileImage(User?.Identity?.Name ?? string.Empty);
+            return result;
+        }
     }
 }

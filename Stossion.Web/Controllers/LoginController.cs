@@ -6,6 +6,9 @@ using Stossion.ViewModels.User;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Stossion.Helpers.Enum;
+using System.Reflection;
+using Stossion.Helpers.RestHelpers;
+using Stossion.Web.Authorization;
 
 namespace Stossion.Web.Controllers
 {
@@ -197,6 +200,25 @@ namespace Stossion.Web.Controllers
 		{
 			var response = await StossionPost("User", "ResetPassword", model);
 			return Ok("Success");
+        }
+
+		[HttpGet]
+		public async Task<string> GetProfilePicture()
+		{
+			ApiGetRequest request = new ApiGetRequest()
+			{
+				Controller = "User",
+				MethodName = "GetProfilePicture"
+			};
+            var response = await StossionGet(request);
+			return response.result.ToString();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            var response = await StossionPost("User", "ChangePassword", model);
+            return Ok(response.result);
         }
     }
 }

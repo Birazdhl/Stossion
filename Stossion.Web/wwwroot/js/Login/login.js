@@ -506,7 +506,7 @@
             success: function (data) {
                 // Handle the success response
                 if (data == "Success") {
-                    toastr.success("Password Changed Successfully!!!")
+                    toastr.success("Password reset Successfully!!!")
                     setTimeout(function () {
                         window.location.href = "/Login/Index";
                     }, 1000);

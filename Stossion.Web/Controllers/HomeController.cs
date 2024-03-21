@@ -24,6 +24,13 @@ namespace Stossion.Web.Controllers
             return View();
         }
 
+        [Authorize]
+        [HttpGet]
+        public IActionResult Menu(string name)
+        {
+            return View("Menu",name);
+        }
+
         //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(string message)
         {

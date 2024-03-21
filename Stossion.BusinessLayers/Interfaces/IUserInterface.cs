@@ -21,5 +21,6 @@ namespace Stossion.BusinessLayers.Interfaces
         Task<string> ChangePassword(ChangePasswordViewModel model, string? userName);
         Task<string> ForgetPasswordVerificationLink(string username);
         Task<string> ResetPassword(ForgetPasswordViewModel model);
+        Task<string> GetProfileImage(string username);
     }
 }

@@ -44,27 +44,7 @@ namespace Stossion.BusinessLayers.Services
                     countryId = _countryInterface.GetCountryBySymbol(model.Country).Id;
                 }
                 var verificatonToken = CreateRandomToken();
-
-                if (!String.IsNullOrEmpty(model.ProfilePicture))
-                {
-                    if (model.ProfilePicture.Contains("base64,"))
-                    {
-                        model.ProfilePicture = model.ProfilePicture.Split(',')[1];
-                    }
-
-                    // Convert base64 string to byte array
-                    byte[] imageBytes = Convert.FromBase64String(model.ProfilePicture);
-
-                    // Generate unique filename
-                    string fileName = model.UserName + ".png";
-
-                    // Specify the path where the image will be saved
-                    string filePath = Path.Combine(Environment.CurrentDirectory,"wwwroot", "images", "user", fileName);
-
-                    // Write the bytes to the file
-                    System.IO.File.WriteAllBytes(filePath, imageBytes);
-                }
-
+             
                 var newUser = new StossionUser()
                 {
                     FirstName = model.FirstName,
@@ -382,6 +362,24 @@ namespace Stossion.BusinessLayers.Services
                 // Handle password reset failure
                 return "Reset Password Failed!!! The reset link may be invalid or expired";
             }
+        }
+
+        public async Task<string> GetProfileImage(string username)
+        {
+            // Specify the path where the image will be saved
+            string imagePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "images", "user",username + ".png");
+
+            if (!File.Exists(imagePath))
+            {
+                imagePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "images", "user", "noimage.png");
+            }
+
+            byte[] imageBytes = System.IO.File.ReadAllBytes(imagePath);
+            string base64String = Convert.ToBase64String(imageBytes);
+
+            // Return the Base64 string as JSON or whatever format you prefer
+            return base64String;
+
         }
 
     }
