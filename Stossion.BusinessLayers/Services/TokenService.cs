@@ -27,7 +27,7 @@ namespace Stossion.BusinessLayers.Services
 			var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 			var ppValue = string.Empty;
 			var ProfilePicture = Path.Combine(Environment.CurrentDirectory, "wwwroot", "images", "user", user.UserName + ".png");
-			if (!File.Exists(ProfilePicture))
+			if (File.Exists(ProfilePicture))
 			{
                 byte[] imageBytes = File.ReadAllBytes(ProfilePicture);
                 ppValue = Convert.ToBase64String(imageBytes);
@@ -45,8 +45,7 @@ namespace Stossion.BusinessLayers.Services
 				new Claim(ClaimTypes.Email, user.Email),
 				new Claim(ClaimTypes.Role, user.Role),
 				new Claim(ClaimTypes.GivenName, user.FirstName),
-				new Claim(ClaimTypes.Surname, user.LastName),
-				new Claim("ProfilePicture", ppValue)
+				new Claim(ClaimTypes.Surname, user.LastName)
 			};
 			var token = new JwtSecurityToken(
 				issuer: _config["Jwt:Issuer"],
