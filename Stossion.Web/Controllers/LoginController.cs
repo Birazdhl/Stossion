@@ -24,11 +24,8 @@ namespace Stossion.Web.Controllers
 				return View();
 			}
 			
-			var authenticationResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-			//if (authenticationResult.Succeeded)
-			//{
-			//	return RedirectToAction("Index", "Home");
-			//}
+			//var authenticationResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+		
 			if (User.Identity != null && User.Identity.IsAuthenticated)
 			{
 				return RedirectToAction("Index", "Home");
@@ -36,16 +33,7 @@ namespace Stossion.Web.Controllers
 			return View();
         }
 
-		//public IActionResult UnverifiedEmail(string userName)
-		//{
-		//	if (String.IsNullOrEmpty(userName))
-		//	{
-		//		return RedirectToAction("Index");
-		//          }
-		//          ViewBag.UserName = userName;
-		//          return View("~/Views/Home/ErrorMessage.cshtml", "Please Verify Email first to continue");
-		//      }
-
+	
 		[HttpGet]
 		public IActionResult ForgetPassword()
 		{
@@ -202,7 +190,8 @@ namespace Stossion.Web.Controllers
 			return Ok("Success");
         }
 
-		[HttpGet]
+        [Authorize]
+        [HttpGet]
 		public async Task<string> GetProfilePicture()
 		{
 			ApiGetRequest request = new ApiGetRequest()
@@ -214,6 +203,7 @@ namespace Stossion.Web.Controllers
 			return response.result.ToString();
         }
 
+		[Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {

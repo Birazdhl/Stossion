@@ -31,7 +31,8 @@ namespace Stossion.BusinessLayers.Services
         IConfiguration _config,
         ITokenInterface _tokenRepository,
         ICountryInterface _countryInterface,
-        IEmailSenderService emailSenderService) : IUserInterface
+        IEmailSenderService emailSenderService,
+        IDapperInterface dapperInterface) : IUserInterface
     {
         public async Task<LoginResponse> CreateUser(RegisterViewModel model)
         {
@@ -381,6 +382,28 @@ namespace Stossion.BusinessLayers.Services
             return base64String;
 
         }
+
+        public async Task<UserDetailsViewModel> GetUserDetails(string username)
+        {
+            if (String.IsNullOrEmpty(username))
+            {
+                return null;
+            }
+            StringBuilder query = new StringBuilder();
+            query.AppendLine("select FirstName , LastName, c.Name as 'Country',c.Logo as 'Logo',g.Type as 'Gender'," +
+                "u.Email, u.PhoneNumber from AspNetUsers u " +
+
+                "Inner Join Country c on u.CountryId = c.Id " +
+                "Inner Join Gender g on u.GenderId = g.Id " +
+                "where u.UserName = @username");
+            var result = await dapperInterface.QuerySingleAsync<UserDetailsViewModel>(query.ToString(), new { username });
+            if (result != null)
+            {
+                result.ProfilePicture = await GetProfileImage(username);
+            }
+            return result;
+        }
+
 
     }
 

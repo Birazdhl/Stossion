@@ -1,0 +1,86 @@
+﻿@using Stossion.ViewModels.User;
+@model UserDetailsViewModel;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <style>
+        /* Add your CSS styling here */
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        .profile-logo {
+            width: 30px;
+            height: 30px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .profile-info {
+            margin-bottom: 20px;
+        }
+
+            .profile-info label {
+                font-weight: bold;
+            }
+
+        .edit-link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <img src="data:image/png;base64,@Model.ProfilePicture" alt="Profile Picture" class="profile-picture" />
+
+        <div class="profile-info">
+            <label>Name: </label>
+            <span>@Model.FirstName @Model.LastName</span>
+            <a href="#" class="edit-link" id="edit-name">Edit</a>
+        </div>
+
+        <div class="profile-info">
+            <label>Country: </label>
+            <span>
+                <img src="@Model.Logo" alt="Country Logo" class="profile-logo" />
+                @Model.Country
+            </span>
+            <a href="#" class="edit-link" id="edit-country">Edit</a>
+        </div>
+
+        <div class="profile-info">
+            <label>Gender: </label>
+            <span>@Model.Gender</span>
+            <a href="#" class="edit-link" id="edit-gender">Edit</a>
+        </div>
+
+        <div class="profile-info">
+            <label>Email: </label>
+            <span>@Model.Email</span>
+            <a href="#" class="edit-link" id="edit-email">Edit</a>
+        </div>
+
+        <div class="profile-info">
+            <label>Phone Number: </label>
+            <span>@Model.PhoneNumber</span>
+            <a href="#" class="edit-link" id="edit-phone">Edit</a>
+        </div>
+    </div>
+</body>
+</html>

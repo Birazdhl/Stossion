@@ -113,5 +113,21 @@ namespace Stossion.API.Controllers
             var result = await userInterface.GetProfileImage(User?.Identity?.Name ?? string.Empty);
             return result;
         }
+
+        [Authorize]
+        [HttpGet("GetUserDetails")]
+        public async Task<UserDetailsViewModel> GetUserDetails()
+        {
+            try
+            {
+                var result = await userInterface.GetUserDetails(User?.Identity?.Name ?? string.Empty);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
+        }
     }
 }

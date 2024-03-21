@@ -15,8 +15,8 @@ namespace Stossion.BusinessLayers.Services
 	{
 		public async Task<List<T>> QueryExecuteAsync<T>(string query)
 		{
-			using var connection = context.CreateConnection();
-			var result = await connection.QueryAsync<T>(query);
+            using var connection = context.CreateConnection();
+            var result = await connection.QueryAsync<T>(query);
 			return result.ToList();
 		}
 
@@ -26,5 +26,13 @@ namespace Stossion.BusinessLayers.Services
 			var result = await connection.QueryFirstAsync<T>(query);
 			return (T)result;
 		}
-	}
+
+		public async Task<T> QuerySingleAsync<T>(string query,object parameter)
+		{
+            using var connection = context.CreateConnection(); 
+			var result = await connection.QuerySingleAsync<T>(query, parameter);
+            return (T)result;
+        }
+
+    }
 }

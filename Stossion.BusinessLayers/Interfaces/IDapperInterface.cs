@@ -10,5 +10,7 @@ namespace Stossion.BusinessLayers.Interfaces
 	{
 		Task<List<T>> QueryExecuteAsync<T>(string query);
 		Task<T> QueryExecuteSingleAsync<T>(string query);
-	}
+		Task<T> QuerySingleAsync<T>(string query, object parameter);
+
+    }
 }
