@@ -18,7 +18,8 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background : linear-gradient(to right, #F0F0F0, #D0D0D0);
 }
 
 .logout {

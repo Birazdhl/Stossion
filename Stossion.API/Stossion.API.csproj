@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Stossion.DbManagement\Stossion.DbManagement.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\user\" />
+  </ItemGroup>
+
 </Project>

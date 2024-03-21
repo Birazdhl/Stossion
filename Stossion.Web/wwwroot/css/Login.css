@@ -11738,6 +11738,23 @@ option.loginOption {
         cursor: not-allowed;
     }
 
+    .custom-file-upload {
+        color: white;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 10px;
+        border-radius: 20px;
+        padding: 1rem;
+        margin-left: 0.3rem;
+        cursor: pointer;
+    }
+
+    #uploadedImagesContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 1rem;
+    }
+
     .btn:hover, .btn:active, .btn:focus {
         outline: none;
     }

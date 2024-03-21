@@ -6,7 +6,7 @@
             title: 'Register',
             html: `
             <form id="registerFrm">
-
+                <input id="profilePicture" hidden/>
                 <div class="form-group d-flex">
                     <div>
                         <input type="text" class="form-control registerInput" id="firstName" placeholder="First Name" name="FirstName" >
@@ -66,7 +66,16 @@
                     </div>
                 </div>
 
-                
+                <div class="form-group d-flex">
+                    <div>
+                        <input type="file" id="userImage" name="UserImage" accept="image/*" style="display: none;">
+                        <label for="userImage" class="custom-file-upload">
+                            Upload Profile Image
+                        </label>
+                        <span class="errorTxt d-none" id="userImageErrorField"></span>
+                    </div>
+                    <div id="uploadedImagesContainer"></div>
+                </div>
             </form>
         `,
             showCancelButton: true,
@@ -120,6 +129,7 @@
                             "Email": $("#Email").val(),
                             "Birthday": $("#Birthday").val(),
                             "Gender": $("#Gender").val(),
+                            "ProfilePicture": $("#profilePicture").val()
                         };
                         $.ajax({
                             url: "/Login/Register", // Replace with your controller and action
@@ -222,17 +232,55 @@
                 return resultContainer;
             },
         }).on("select2:open", function () {
-                $(".select2-search__field").on("keydown", function (e) {
-                    if (e.keyCode === 13) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
-                });
-            });  
+        $(".select2-search__field").on("keydown", function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            });
+        });  
 
         var date = new Date();
         date = getDateFormat(date.setFullYear(date.getFullYear() - 12));
         $("#Birthday").val(date);
+
+        $(document).on('change', '#userImage', function (event) {
+
+            var file = event.target.files[0];
+
+            // Display the name of the uploaded file and a cross logo
+            var fileName = file.name;
+            var uploadedImageContainer = document.createElement('div');
+            uploadedImageContainer.style.display = 'inline-block';
+
+            var fileNameElement = document.createElement('span');
+            fileNameElement.textContent = fileName;
+
+            // Create a cross logo (HTML entity)
+            var crossLogo = document.createElement('span');
+            crossLogo.innerHTML = '&#10060;';
+            crossLogo.style.cursor = 'pointer';
+            crossLogo.style.marginLeft = '5px';
+            crossLogo.onclick = function () {
+                // Remove the uploaded image container
+                uploadedImageContainer.remove();
+                // Clear the file input
+                document.getElementById('userImage').value = '';
+                $("#profilePicture").val('');
+            };
+
+            uploadedImageContainer.appendChild(fileNameElement);
+            uploadedImageContainer.appendChild(crossLogo);
+
+            // Add the uploaded image container to the container
+            var container = document.getElementById('uploadedImagesContainer');
+            container.appendChild(uploadedImageContainer);
+            getBase64(event, function (value) {
+                $("#profilePicture").val(value);
+            });
+
+        });
+
     });
 
     $(document).on('focusout', '#firstName', function () {
@@ -274,6 +322,7 @@
         if ($(this).val().length > 0) {
             $('#PhoneNumberErrorField').text("Please enter with extension(numbers only)");
             $('#PhoneNumberErrorField').removeClass("d-none");
+            $('#PhoneNumberErrorField').css("color","green");
         } else {
             $('#PhoneNumberErrorField').addClass("d-none");
         }
@@ -473,6 +522,7 @@
             }
         });
     });
+
    
 });
 

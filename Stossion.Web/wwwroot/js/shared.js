@@ -22,3 +22,28 @@ function getDateFormat(dateTime) {
 
     return `${monthName} ${day} ${year}`;
 }
+
+function getBase64(event, callback) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+        callback(reader.result); // Pass the result to the callback function
+    };
+    reader.onerror = function (error) {
+        console.log('Error: ', error);
+    };
+}
+
+//function getBase64(event) {
+
+//    var file = event.target.files[0];
+//    var reader = new FileReader();
+//    reader.readAsDataURL(file);
+//    reader.onload = function () {
+//        callback(reader.result);
+//    };
+//    reader.onerror = function (error) {
+//        console.log('Error: ', error);
+//    };
+//}

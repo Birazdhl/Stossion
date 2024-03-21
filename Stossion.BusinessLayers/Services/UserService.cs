@@ -44,6 +44,27 @@ namespace Stossion.BusinessLayers.Services
                     countryId = _countryInterface.GetCountryBySymbol(model.Country).Id;
                 }
                 var verificatonToken = CreateRandomToken();
+
+                if (!String.IsNullOrEmpty(model.ProfilePicture))
+                {
+                    if (model.ProfilePicture.Contains("base64,"))
+                    {
+                        model.ProfilePicture = model.ProfilePicture.Split(',')[1];
+                    }
+
+                    // Convert base64 string to byte array
+                    byte[] imageBytes = Convert.FromBase64String(model.ProfilePicture);
+
+                    // Generate unique filename
+                    string fileName = model.UserName + ".png";
+
+                    // Specify the path where the image will be saved
+                    string filePath = Path.Combine(Environment.CurrentDirectory,"wwwroot", "images", "user", fileName);
+
+                    // Write the bytes to the file
+                    System.IO.File.WriteAllBytes(filePath, imageBytes);
+                }
+
                 var newUser = new StossionUser()
                 {
                     FirstName = model.FirstName,
@@ -112,6 +133,7 @@ namespace Stossion.BusinessLayers.Services
 
         public async Task<LoginResponse> LoginUser(LoginViewModel model)
         {
+
             if (model == null)
                 return new LoginResponse() { flag = false, token = null!, message = StossionConstants.emptyModel };
 

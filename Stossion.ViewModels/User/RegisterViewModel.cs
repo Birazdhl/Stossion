@@ -56,6 +56,8 @@ namespace Stossion.ViewModels.User
 
 
 		[Range(1, 3, ErrorMessage = "Gender must be Male, Female, or Not Specified.")]
-		public int Gender { get; set; } 
+		public int Gender { get; set; }
+
+		public string ProfilePicture { get; set; } = string.Empty;
     }
 }
