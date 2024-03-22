@@ -31,9 +31,6 @@
 
 </head>
 
-<!-- Upper Header -->
- <input type="checkbox" id="check">
-
 <header class="fixed-top">
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light navColor box-shadow mb-3">
         <div class="container-fluid">
@@ -60,44 +57,37 @@
                         </div>
                        
                      </div>
-                     
-                     <!--mobile navigation bar start-->
-                       @*   <div class="mobile_nav">
-                           <div class="nav_bar">
-                             <i class="fa fa-bars nav_btn"></i>
-                           </div>
-                           <div class="mobile_nav_items">
+                </div>
+            </div>
+            <div class="mobile_nav">
+                <div  class="nav_bar">
+                    <i class="fa fa-bars nav_btn"></i>
+                </div>
+                <div class="mobile_nav_items">
                              <a href="#"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
                              <a href="#"><i class="fas fa-cogs"></i><span>Components</span></a>
                              <a href="#"><i class="fas fa-table"></i><span>Tables</span></a>
                              <a href="#"><i class="fas fa-th"></i><span>Forms</span></a>
                              <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
                              <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
-                           </div>
-                         </div> *@
-                     <!--mobile navigation bar end-->
-                    
-                </div>
+               </div>
             </div>
-        </div>
-        <div class="mob">
-                             <i class="fa fa-bars nav_btn"></i>
         </div>
     </nav>
 </header>
 
- <!--header area end-->
+<!--header area end-->
 
-    <!--sidebar start-->
-    <div class="sidebar">
-      <a href="#"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
-      <a href="#"><i class="fas fa-cogs"></i><span>Components</span></a>
-      <a href="#"><i class="fas fa-table"></i><span>Tables</span></a>
-      <a href="#"><i class="fas fa-th"></i><span>Forms</span></a>
-      <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
-      <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
-    </div>
-    <!--sidebar end-->
+<!--sidebar start-->
+<div class="sidebar">
+  <a href="#"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+  <a href="#"><i class="fas fa-cogs"></i><span>Components</span></a>
+  <a href="#"><i class="fas fa-table"></i><span>Tables</span></a>
+  <a href="#"><i class="fas fa-th"></i><span>Forms</span></a>
+  <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
+  <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
+</div>
+<!--sidebar end-->
 
 
 
@@ -113,24 +103,7 @@
     </script>
 
     <style>
-    body{
-  margin: 0;
-  padding: 0;
-  font-family: "Roboto", sans-serif;
-}
 
-
-.left_area h3{
-  color: #fff;
-  margin: 0;
-  text-transform: uppercase;
-  font-size: 22px;
-  font-weight: 900;
-}
-
-.left_area span{
-  color: #19B3D3;
-}
 
 .sidebar{
   z-index: 1;
@@ -147,25 +120,6 @@
   height: 100vh;
 }
 
-.profile_info{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.sidebar .profile_info .profile_image{
-  width: 100px;
-  height: 100px;
-  border-radius: 100px;
-  margin-bottom: 10px;
-}
-
-.sidebar .profile_info h4{
-  color: #ccc;
-  margin-top: 0;
-  margin-bottom: 20px;
-}
 
 .sidebar a{
   color: #fff;
@@ -217,21 +171,6 @@ label #sidebar_btn:hover{
   width: 100%;
 }
 
-.content{
-  width: (100% - 250px);
-  margin-top: 60px;
-  padding: 20px;
-  margin-left: 250px;
-  background: url(background.png) no-repeat;
-  background-position: center;
-  background-size: cover;
-  height: 100vh;
-  transition: 0.5s;
-}
-
-#check:checked ~ .content{
-  margin-left: 60px;
-}
 
 #check:checked ~ .sidebar .profile_info{
   display: none;
@@ -245,14 +184,6 @@ label #sidebar_btn:hover{
   display: none;
 }
 
-.content .card p{
-  background: #fff;
-  padding: 15px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  opacity: 0.8;
-}
-
 /* Responsive CSS */
 
 @@media screen and (max-width: 780px){
@@ -264,39 +195,14 @@ label #sidebar_btn:hover{
     display: none;
   }
 
-  .content{
-    margin-left: 0;
-    margin-top: 0;
-    padding: 10px 20px;
-    transition: 0s;
-  }
-
-  #check:checked ~ .content{
-    margin-left: 0;
-  }
 
   .mobile_nav{
     display: block;
-    width: calc(100% - 0%);
   }
 
-  .nav_bar{
-    width: (100% - 0px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-  }
-
-  .nav_bar .mobile_profile_image{
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-  }
 
   .nav_bar .nav_btn{
     color: #fff;
-    font-size: 22px;
     cursor: pointer;
     transition: 0.5s;
     transition-property: color;
@@ -336,35 +242,3 @@ label #sidebar_btn:hover{
   }
 }
 </style>
-
-@* <div class="row mr-0" style="margin-top: 5rem; height: 100vh;">
-    <div class="col-4" style="background: red">
-        <h1>lol</h1>
-    </div>
-
-     <div class="col-8" style="background: green">
-            @RenderBody()
-    </div>
-</div>
- *@
-
-<!-- Sidebar -->
-@* <div class="navigationBars">
-    <div class="mt-4">
-        <a href="#">Stories</a>
-        <a href="#">Confession</a>
-        <a href="#">Articles</a>
-        <a href="#">Quotes</a>
-        <a href="#">Memes</a>
-        <a href="#">Reviews</a>
-    </div>
-</div> *@
-
-@*<!-- Main Content -->
-<div class="main-content">
-    <div class="container-fluid">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-</div> *@
