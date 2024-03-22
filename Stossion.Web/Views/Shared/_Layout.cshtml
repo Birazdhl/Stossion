@@ -15,6 +15,7 @@
     <link href="~/css/toastr/toastr.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/Stossion.Web.styles.css" asp-append-version="true" />
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -30,63 +31,26 @@
 
 </head>
 
- <style>
-
-        .navigationBars{
-            height:100vh;
-            background-color: #343a40; /* Sidebar background color */
-            background: linear-gradient(45deg, #000000, purple);
-            color: white;
-            padding: 20px; /* Padding for menu items */
-            position: fixed; /* Fix the sidebar position */
-            overflow-y: auto; /* Add vertical scroll if needed */
-            z-index: 1000; /* Ensure the sidebar is above other content */
-        }
-
-
-        .navigationBars a {
-            color: white; /* Text color for menu links */
-            display: block; /* Display menu links as blocks */
-            padding: 10px 0; /* Padding for menu links */
-            text-decoration: none; /* Remove default underline */
-        }
-
-        .navigationBars a:hover {
-            background-color: #495057; /* Background color on hover */
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            margin-left: 200px; /* Adjust margin to accommodate sidebar */
-            padding: 20px; /* Padding for main content */
-        }
-
-        @@media (max-width: 768px) {
-            /* Adjust margin for smaller screens */
-            .main-content {
-                margin-left: 0; /* No margin for smaller screens */
-            }
-        }
-
-        /* Header Styles */
-        .navbar.navColor {
-            z-index: 1001; /* Ensure the header is above the sidebar */
-        }
-    </style>
 <!-- Upper Header -->
+ <input type="checkbox" id="check">
+
 <header class="fixed-top">
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light navColor border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light navColor box-shadow mb-3">
         <div class="container-fluid">
-            <div class="row align-items-center w-100">
-                <div class="col-5">
+            <div class="row w-100">
+                <div class="col-5 text-left">
                     <a asp-controller="Home" asp-action="Index"> <img class="cursorPointer" src="~/images/logos/Stoss.png" /> </a>
                 </div>
-                <div class="col-6">
+                <div class="col-7 text-center d-flex">
                     <div class="d-flex align-items-center">
-                        <img src="" alt="Profile Picture" class="rounded-circle" style="width: 30px; height: 30px;">
-                        <span class="ml-2 usernameMenu">@User.Identity.Name</span>
+                        <div>
+                            <img src="" alt="Profile Picture" class="rounded-circle" style="width: 30px; height: 30px;">
+                        </div>
+                        <div class="ml-2">
+                            <span class="usernameMenu">@User.Identity.Name</span>
+                            <i id="submenuToggle" class="fa fa-caret-down subMenuToogle ml-2"></i>
+                        </div>
                         <div class="ml-3">
-                            <i id="submenuToggle" class="fa fa-caret-down subMenuToogle"></i>
                             <div id="submenu" class="dropdown-menu" style="display: none;">
                                 <a class="dropdown-item" href="/Home/ViewProfile">View Profile</a>
                                 <a class="dropdown-item" href="/Home/Menu?name=ChangePassword">Change Password</a>
@@ -94,23 +58,313 @@
                                 <a class="dropdown-item" id="logout" href="/Login/Logout">Logout</a>
                             </div>
                         </div>
-                    </div>
+                       
+                     </div>
+                     
+                     <!--mobile navigation bar start-->
+                       @*   <div class="mobile_nav">
+                           <div class="nav_bar">
+                             <i class="fa fa-bars nav_btn"></i>
+                           </div>
+                           <div class="mobile_nav_items">
+                             <a href="#"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+                             <a href="#"><i class="fas fa-cogs"></i><span>Components</span></a>
+                             <a href="#"><i class="fas fa-table"></i><span>Tables</span></a>
+                             <a href="#"><i class="fas fa-th"></i><span>Forms</span></a>
+                             <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
+                             <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
+                           </div>
+                         </div> *@
+                     <!--mobile navigation bar end-->
+                    
                 </div>
             </div>
+        </div>
+        <div class="mob">
+                             <i class="fa fa-bars nav_btn"></i>
         </div>
     </nav>
 </header>
 
+ <!--header area end-->
 
-<div>
-    <div class="row mr-0">
-        <div class="col-2  navigationBars" style="background:red">
-            
-        </div>
-        <div class="col-6 offset-md-3" style="background:green">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-        </div>
+    <!--sidebar start-->
+    <div class="sidebar">
+      <a href="#"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+      <a href="#"><i class="fas fa-cogs"></i><span>Components</span></a>
+      <a href="#"><i class="fas fa-table"></i><span>Tables</span></a>
+      <a href="#"><i class="fas fa-th"></i><span>Forms</span></a>
+      <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
+      <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
+    </div>
+    <!--sidebar end-->
+
+
+
+     @RenderBody()
+
+
+    <script type="text/javascript">
+         $(document).ready(function(){
+           $('.nav_btn').click(function(){
+             $('.mobile_nav_items').toggleClass('active');
+           });
+         });
+    </script>
+
+    <style>
+    body{
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+}
+
+
+.left_area h3{
+  color: #fff;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.left_area span{
+  color: #19B3D3;
+}
+
+.sidebar{
+  z-index: 1;
+  top: 0;
+  background: linear-gradient(45deg, #000000, purple);
+  padding-top: 70px;
+  position: fixed;
+  left: 0;
+  width: 250px;
+  height: calc(100% - 9%);
+  transition: 0.5s;
+  transition-property: left;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.profile_info{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.sidebar .profile_info .profile_image{
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  margin-bottom: 10px;
+}
+
+.sidebar .profile_info h4{
+  color: #ccc;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.sidebar a{
+  color: #fff;
+  display: block;
+  width: 100%;
+  line-height: 60px;
+  text-decoration: none;
+  padding-left: 40px;
+  box-sizing: border-box;
+  transition: 0.5s;
+  transition-property: background;
+}
+
+.sidebar a:hover{
+  background: #19B3D3;
+}
+
+.sidebar i{
+  padding-right: 10px;
+}
+
+label #sidebar_btn{
+  z-index: 1;
+  color: #fff;
+  position: fixed;
+  cursor: pointer;
+  left: 300px;
+  font-size: 20px;
+  margin: 5px 0;
+  transition: 0.5s;
+  transition-property: color;
+}
+
+label #sidebar_btn:hover{
+  color: #19B3D3;
+}
+
+#check:checked ~ .sidebar{
+  left: -185px;
+}
+
+#check:checked ~ .sidebar a span{
+  display: none;
+}
+
+#check:checked ~ .sidebar a{
+  font-size: 20px;
+  margin-left: 165px;
+  width: 100%;
+}
+
+.content{
+  width: (100% - 250px);
+  margin-top: 60px;
+  padding: 20px;
+  margin-left: 250px;
+  background: url(background.png) no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 100vh;
+  transition: 0.5s;
+}
+
+#check:checked ~ .content{
+  margin-left: 60px;
+}
+
+#check:checked ~ .sidebar .profile_info{
+  display: none;
+}
+
+#check{
+  display: none;
+}
+
+.mobile_nav{
+  display: none;
+}
+
+.content .card p{
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Responsive CSS */
+
+@@media screen and (max-width: 780px){
+  .sidebar{
+    display: none;
+  }
+
+  #sidebar_btn{
+    display: none;
+  }
+
+  .content{
+    margin-left: 0;
+    margin-top: 0;
+    padding: 10px 20px;
+    transition: 0s;
+  }
+
+  #check:checked ~ .content{
+    margin-left: 0;
+  }
+
+  .mobile_nav{
+    display: block;
+    width: calc(100% - 0%);
+  }
+
+  .nav_bar{
+    width: (100% - 0px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+
+  .nav_bar .mobile_profile_image{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  .nav_bar .nav_btn{
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.5s;
+    transition-property: color;
+  }
+
+  .nav_bar .nav_btn:hover{
+    color: #19B3D3;
+  }
+
+  .mobile_nav_items{
+    background: #2F323A;
+    display: none;
+  }
+
+  .mobile_nav_items a{
+    color: #fff;
+    display: block;
+    text-align: center;
+    letter-spacing: 1px;
+    line-height: 60px;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: 0.5s;
+    transition-property: background;
+  }
+
+  .mobile_nav_items a:hover{
+    background: #19B3D3;
+  }
+
+  .mobile_nav_items i{
+    padding-right: 10px;
+  }
+
+  .active{
+    display: block;
+  }
+}
+</style>
+
+@* <div class="row mr-0" style="margin-top: 5rem; height: 100vh;">
+    <div class="col-4" style="background: red">
+        <h1>lol</h1>
+    </div>
+
+     <div class="col-8" style="background: green">
+            @RenderBody()
     </div>
 </div>
+ *@
+
+<!-- Sidebar -->
+@* <div class="navigationBars">
+    <div class="mt-4">
+        <a href="#">Stories</a>
+        <a href="#">Confession</a>
+        <a href="#">Articles</a>
+        <a href="#">Quotes</a>
+        <a href="#">Memes</a>
+        <a href="#">Reviews</a>
+    </div>
+</div> *@
+
+@*<!-- Main Content -->
+<div class="main-content">
+    <div class="container-fluid">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+</div> *@
