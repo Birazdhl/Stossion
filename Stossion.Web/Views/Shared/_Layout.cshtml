@@ -30,7 +30,51 @@
 
 </head>
 
-<header>
+ <style>
+
+        .navigationBars{
+            height:100vh;
+            background-color: #343a40; /* Sidebar background color */
+            background: linear-gradient(45deg, #000000, purple);
+            color: white;
+            padding: 20px; /* Padding for menu items */
+            position: fixed; /* Fix the sidebar position */
+            overflow-y: auto; /* Add vertical scroll if needed */
+            z-index: 1000; /* Ensure the sidebar is above other content */
+        }
+
+
+        .navigationBars a {
+            color: white; /* Text color for menu links */
+            display: block; /* Display menu links as blocks */
+            padding: 10px 0; /* Padding for menu links */
+            text-decoration: none; /* Remove default underline */
+        }
+
+        .navigationBars a:hover {
+            background-color: #495057; /* Background color on hover */
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 200px; /* Adjust margin to accommodate sidebar */
+            padding: 20px; /* Padding for main content */
+        }
+
+        @@media (max-width: 768px) {
+            /* Adjust margin for smaller screens */
+            .main-content {
+                margin-left: 0; /* No margin for smaller screens */
+            }
+        }
+
+        /* Header Styles */
+        .navbar.navColor {
+            z-index: 1001; /* Ensure the header is above the sidebar */
+        }
+    </style>
+<!-- Upper Header -->
+<header class="fixed-top">
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light navColor border-bottom box-shadow mb-3">
         <div class="container-fluid">
             <div class="row align-items-center w-100">
@@ -58,13 +102,15 @@
 </header>
 
 
-
-
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+<div>
+    <div class="row mr-0">
+        <div class="col-2  navigationBars" style="background:red">
+            
+        </div>
+        <div class="col-6 offset-md-3" style="background:green">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
     </div>
-
-    @await RenderSectionAsync("Scripts", required: false)
+</div>

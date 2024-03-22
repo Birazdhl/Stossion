@@ -1,9 +1,6 @@
 ﻿@using Stossion.ViewModels.User;
 @model UserDetailsViewModel;
 
-<!DOCTYPE html>
-<html>
-<head>
     <title>User Profile</title>
     <style>
         /* Add your CSS styling here */
@@ -43,44 +40,61 @@
             text-decoration: underline;
             cursor: pointer;
         }
+
+        .edit-field {
+            display: none;
+        }
     </style>
-</head>
-<body>
     <div class="profile-container">
         <img src="data:image/png;base64,@Model.ProfilePicture" alt="Profile Picture" class="profile-picture" />
 
         <div class="profile-info">
             <label>Name: </label>
-            <span>@Model.FirstName @Model.LastName</span>
+            <span class="text-field">@Model.FirstName @Model.LastName</span>
+            <input type="text" class="edit-field form-control stextBox required " value="@Model.FirstName" />
+            <input type="text" class="edit-field form-control stextBox required " value="@Model.LastName" />
             <a href="#" class="edit-link" id="edit-name">Edit</a>
         </div>
 
         <div class="profile-info">
             <label>Country: </label>
-            <span>
+            <span class="text-field">
                 <img src="@Model.Logo" alt="Country Logo" class="profile-logo" />
                 @Model.Country
             </span>
+            <input type="text" class="edit-field" value="@Model.Country" />
             <a href="#" class="edit-link" id="edit-country">Edit</a>
         </div>
 
         <div class="profile-info">
             <label>Gender: </label>
-            <span>@Model.Gender</span>
+            <span class="text-field">@Model.Gender</span>
+            <input type="text" class="edit-field" value="@Model.Gender" />
             <a href="#" class="edit-link" id="edit-gender">Edit</a>
         </div>
 
         <div class="profile-info">
             <label>Email: </label>
-            <span>@Model.Email</span>
+            <span class="text-field">@Model.Email</span>
+            <input type="text" class="edit-field" value="@Model.Email" />
             <a href="#" class="edit-link" id="edit-email">Edit</a>
         </div>
 
         <div class="profile-info">
             <label>Phone Number: </label>
-            <span>@Model.PhoneNumber</span>
+            <span class="text-field">@Model.PhoneNumber</span>
+            <input type="text" class="edit-field" value="@Model.PhoneNumber" />
             <a href="#" class="edit-link" id="edit-phone">Edit</a>
         </div>
     </div>
-</body>
-</html>
+
+    <script>
+        $(document).ready(function () {
+            $(".edit-link").click(function (e) {
+                e.preventDefault();
+                var fieldContainer = $(this).closest('.profile-info');
+                fieldContainer.find('.text-field').toggle();
+                fieldContainer.find('.edit-field').toggle().focus();
+            });
+        });
+    </script>

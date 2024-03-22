@@ -110,3 +110,7 @@ body {
     color: red;
     padding: 10px;
 }
+
+.bg-white {
+    background:white;
+}
