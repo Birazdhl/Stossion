@@ -22,6 +22,8 @@ namespace Stossion.DbManagement.StossionDbManagement
         public DateTime CreatedAt { get; set; }
 
         public DateTime ModifiedAt { get; set; }
+        public string EmailChangeConfirmationToken { get; set; } = string.Empty;
+        public string ChangingEmail { get; set; } = string.Empty;
         public virtual Country Country { get; set; }
 		public virtual Gender Gender { get; set; }
         public string ProfilePicture { get; set; }

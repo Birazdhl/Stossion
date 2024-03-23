@@ -14,7 +14,7 @@ namespace Stossion.API.ApplicationService
             service.AddScoped<IDapperDbContext, DapperDbContext>();
 			service.AddTransient<IDapperInterface, DapperRepository>();
 			service.AddTransient<IEmailSenderService, EmailSenderService>();
-
+            service.AddTransient<ISharedService, SharedService>();
 
 		}
 	}

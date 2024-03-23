@@ -54,6 +54,14 @@ namespace Stossion.Web.Controllers
             return NoContent();
         }
 
+        [Authorize]
+        [HttpPost]
+        public async Task<string> UpdateUserProfile(UpdateUserProfileViewModel model)
+        {
+            var response = await StossionPost("User", "UpdateUserProfile", model);
+            return response.result.ToString();
+        }
+
         //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(string message)
         {

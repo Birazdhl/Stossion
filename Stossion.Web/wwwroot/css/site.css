@@ -180,7 +180,9 @@ select.form-control:focus {
     }
 
         .sidebar a:hover {
-            background: #19B3D3;
+            border-top-right-radius: 25px;
+            border-bottom-left-radius: 25px;
+            background: black;
         }
 
     .sidebar i {
@@ -259,6 +261,92 @@ label #sidebar_btn {
     border-bottom-right-radius: 25px;
 }
 
+
+/*view Profile*/
+
+/* Add your CSS styling here */
+.profile-container {
+    margin: 0 auto !important;
+    padding: 20px !important;
+}
+
+.profile-picture {
+    width: 150px !important;
+    height: 150px !important;
+    border-radius: 50% !important;
+    margin: 0 auto 20px !important;
+    display: block !important;
+}
+
+.profile-logo {
+    width: 30px !important;
+    height: 30px !important;
+    vertical-align: middle !important;
+    margin-right: 10px !important;
+}
+
+.profile-info {
+    margin-bottom: 20px !important;
+}
+
+    .profile-info label {
+        font-weight: bold !important;
+    }
+
+.edit-link {
+    color: blue !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+}
+
+.edit-field {
+    display: none !important;
+}
+
+
+.updateProfilePhoneNumber {
+    width: 70% !important;
+}
+
+.updateProfileGender {
+    width: 35% !important;
+}
+
+
+.select2-container {
+    width: 50% !important;
+    z-index: 1px !important;
+}
+
+.countryDropdown {
+    background: white !important;
+    color: black !important;
+}
+
+/* Style for the first Select2 dropdown with black background */
+#updateProfileCountry + .select2-container .select2-selection {
+    color: white !important;
+    text-align: left !important;
+    height: 45px !important;
+    border-radius: 33px !important;
+    padding-top: 0.4rem !important;
+    padding-left: 1rem !important;
+    border: 2px solid purple !important;
+}
+
+.profile-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important; /* Center horizontally */
+    justify-content: center !important; /* Center vertically */
+    text-align: center !important; /* Center text */
+}
+
+.stossionRadius {
+    border-top-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
 /* Responsive CSS */
 @media screen and (max-width: 1080px) {
     .sidebar {
@@ -290,6 +378,10 @@ label #sidebar_btn {
         background: #2F323A;
         height: 100vh;
         display: none;
+        position: fixed;
+        width: 100%;
+        z-index: 1;
+        margin-top: -15px;
     }
 
     .mobile_nav_items a {
@@ -304,9 +396,11 @@ label #sidebar_btn {
         transition-property: background;
     }
 
-    .mobile_nav_items a:hover {
-        background: #19B3D3;
-    }
+        .mobile_nav_items a:hover {
+            background: purple;
+            border-top-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+        }
 
     .mobile_nav_items i {
         padding-right: 10px;
@@ -336,6 +430,11 @@ label #sidebar_btn {
 
     .navProfileMenu {
         margin-left: -25px;
+    }
+
+    .select2-container {
+        width: 100% !important;
+        z-index: 1;
     }
 
 }

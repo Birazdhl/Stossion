@@ -32,7 +32,8 @@ namespace Stossion.BusinessLayers.Services
         ITokenInterface _tokenRepository,
         ICountryInterface _countryInterface,
         IEmailSenderService emailSenderService,
-        IDapperInterface dapperInterface) : IUserInterface
+        IDapperInterface dapperInterface,
+        ISharedService sharedService) : IUserInterface
     {
         public async Task<LoginResponse> CreateUser(RegisterViewModel model)
         {
@@ -210,6 +211,16 @@ namespace Stossion.BusinessLayers.Services
 
 		}
 
+        private async Task SendEmailChangeConfirmation(string email, string token)
+        {
+            string emailMessage = _context.Templates.Where(x => x.Name == StossionConstants.ChangeEmail).FirstOrDefault()?.Value ?? string.Empty;
+            var link = _config["JWT:Audience"] + "/Login/ChangeEmail?token=" + token;
+            emailMessage = emailMessage.Replace("@verificationLink", link);
+
+            await emailSenderService.SendEmailAsync(email, StossionConstants.emailVerificationLink, emailMessage);
+
+        }
+
         public async Task<LoginResponse> VerifyEmail(string token)
         {
             try
@@ -237,6 +248,36 @@ namespace Stossion.BusinessLayers.Services
             }
 			
 		}
+
+        public async Task<LoginResponse> ChangeEmail(string token)
+        {
+            try
+            {
+                var getUser = _userManager.Users.FirstOrDefault(u => u.EmailChangeConfirmationToken == token);
+                if (getUser is null)
+                {
+                    return new LoginResponse() { flag = false, token = null!, message = StossionConstants.invalidParameter };
+                }
+
+                getUser.EmailChangeConfirmationToken = string.Empty;
+                getUser.VerifyAt = DateTime.Now;
+                getUser.EmailConfirmed = true;
+                getUser.Email = getUser.ChangingEmail;
+                getUser.ChangingEmail = string.Empty;
+
+                _context.Users.Update(getUser);
+                await _context.SaveChangesAsync();
+
+                var login = await _tokenRepository.GenerateAndReturnToken(getUser.Email ?? string.Empty, true);
+                login.message = StossionConstants.success;
+                return login;
+            }
+            catch (Exception)
+            {
+                return new LoginResponse() { flag = false, token = null!, message = StossionConstants.internalServerError };
+            }
+
+        }
 
         public async Task<string> ChangePassword(ChangePasswordViewModel model, string? userName)
         {
@@ -404,6 +445,113 @@ namespace Stossion.BusinessLayers.Services
             return result;
         }
 
+        public async Task<string> UpdateUserProfile(string username, UpdateUserProfileViewModel model)
+        {
+            if (String.IsNullOrEmpty(username))
+            {
+                return StossionConstants.invalidUsername;
+            }
+
+            var getUser = _userManager.Users.FirstOrDefault(u => u.UserName == username);
+
+            if (getUser == null) {
+                return StossionConstants.invalidUsername;
+            }
+
+            var currentEmail = getUser.Email;
+
+            var verificatonToken = CreateRandomToken();
+
+            if (model.Key.ToLower() == "email")
+            {
+                if (model.Password != model.ConfirmPasswords)
+                {
+                    return "Password Dosen't Match";
+                }
+
+                bool checkUserPasswords = await _userManager.CheckPasswordAsync(getUser, model.Password);
+                if (!checkUserPasswords)
+                    return "Incorrect Password";
+
+                if (String.IsNullOrEmpty(model.Value))
+                {
+                    return "Email is Required";
+                }
+                if (currentEmail == model.Value)
+                {
+                    return StossionConstants.success;
+                }
+                var isValidEmail = sharedService.CheckValidEmail(model.Value);
+                if (!isValidEmail)
+                {
+                    return StossionConstants.invalidEmail;
+                }
+
+                var getUserByEmail = _userManager.Users.FirstOrDefault(u => u.Email == model.Value);
+                if (getUserByEmail != null && getUserByEmail.EmailConfirmed) {
+                    return "Email already registered";
+                }
+
+
+                getUser.ChangingEmail = model.Value;
+                getUser.EmailChangeConfirmationToken = verificatonToken;
+
+
+            }
+            else if (model.Key.ToLower() == "name")
+            {
+                string[] values = model.Value.Split(',');
+
+                string firstValue = values[0].Trim() ?? string.Empty;
+                string secondValue = values[1].Trim() ?? string.Empty;
+
+                if (String.IsNullOrEmpty(firstValue) || String.IsNullOrEmpty(secondValue))
+                {
+                    return "Both FirstName and LastName are required";
+                }
+
+                getUser.FirstName = firstValue;
+                getUser.LastName = secondValue;
+            }
+            else if (model.Key.ToLower() == "country")
+            {
+                var id = Convert.ToInt32(model.Value);
+                var country = _context.Country.Where(x => x.Id == id);
+                if (country == null)
+                {
+                    return "Country Not Found";
+                }
+                getUser.CountryId = id;
+            }
+            else if (model.Key.ToLower() == "gender")
+            {
+                var id = Convert.ToInt32(model.Value);
+                if (id < 0 && id > 3)
+                {
+                    return "Invalid Gender Value";
+                }
+                getUser.GenderId = id;
+            }
+            else if (model.Key.ToLower() == "phonenumber")
+            {
+                getUser.PhoneNumber = model.Value;
+            }
+            else if (model.Key.ToLower() == "profilepicture")
+            {
+                getUser.ProfilePicture = model.Value;
+            }
+
+            _context.Users.Update(getUser);
+            await _context.SaveChangesAsync();
+
+            if (model.Key == "email")
+            {
+                await SendEmailChangeConfirmation(model.Value, verificatonToken);
+            }
+
+            return StossionConstants.success;
+        }
+    
 
     }
 

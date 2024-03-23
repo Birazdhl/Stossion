@@ -11,6 +11,7 @@ using MimeKit;
 using Microsoft.IdentityModel.Protocols;
 using Stossion.Helpers.Enum;
 using Microsoft.Extensions.Configuration;
+using System.Text.RegularExpressions;
 
 namespace Stossion.BusinessLayers.Services
 {

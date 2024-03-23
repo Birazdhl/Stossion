@@ -131,4 +131,28 @@
         });
     });  
 
+
+    $(document).on('input', '.phoneNumberValidation', function () {
+        // Get the current value of the input field
+        var inputValue = $(this).val();
+
+        // Use a regular expression to check if the input contains only numbers
+        var numbersOnly = /^\d{1,15}$/;
+
+        // If the input does not match the regular expression, clear the input field
+        if (!numbersOnly.test(inputValue) || inputValue.length > 15) {
+            $(this).val(inputValue.replace(/.$/, ""));
+            //var value = inputValue.replace(/.$/, "");
+            //$(this).val(value);
+        }
+
+        if ($(this).val().length > 0) {
+            $('.PhoneNumberErrorField').text("Please enter with extension(numbers only)");
+            $('.PhoneNumberErrorField').removeClass("d-none");
+            $('.PhoneNumberErrorField').css("color", "green");
+        } else {
+            $('.PhoneNumberErrorField').addClass("d-none");
+        }
+    });
+
 });

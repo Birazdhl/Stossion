@@ -82,6 +82,22 @@ namespace Stossion.API.Controllers
 		}
 
         [HttpPost]
+        [Route("ChangeEmail")]
+        public async Task<IActionResult> ChangeEmail([FromBody] string token)
+        {
+            try
+            {
+                var result = await userInterface.ChangeEmail(token);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return Ok(StossionConstants.internalServerError);
+            }
+
+        }
+
+        [HttpPost]
         [Authorize]
         [Route("ChangePassword")]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -128,6 +144,22 @@ namespace Stossion.API.Controllers
                 throw;
             }
             
+        }
+
+        [Authorize]
+        [HttpPost("UpdateUserProfile")]
+        public async Task<string> UpdateUserProfile(UpdateUserProfileViewModel model)
+        {
+            try
+            {
+                var result = await userInterface.UpdateUserProfile(User?.Identity?.Name ?? string.Empty , model);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Stossion.DbManagement.StossionDbManagement;
 
@@ -11,9 +12,11 @@ using Stossion.DbManagement.StossionDbManagement;
 namespace Stossion.DbManagement.Migrations
 {
     [DbContext(typeof(StossionDbContext))]
-    partial class StossionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240323212932_ChangingEmail")]
+    partial class ChangingEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

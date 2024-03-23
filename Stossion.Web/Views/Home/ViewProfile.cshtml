@@ -1,95 +1,9 @@
 ﻿@using Stossion.ViewModels.User;
 @model UserDetailsViewModel;
+    
 
     <title>User Profile</title>
-    <style>
-        /* Add your CSS styling here */
-        .profile-container {
-            margin: 0 auto;
-            padding: 20px;
-        }
 
-        .profile-picture {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: block;
-        }
-
-        .profile-logo {
-            width: 30px;
-            height: 30px;
-            vertical-align: middle;
-            margin-right: 10px;
-        }
-
-        .profile-info {
-            margin-bottom: 20px;
-        }
-
-            .profile-info label {
-                font-weight: bold;
-            }
-
-        .edit-link {
-            color: blue;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .edit-field {
-            display: none;
-        }
-
-        
-        .updateProfilePhoneNumber {
-            width: 70%;
-        }
-
-        .updateProfileGender {
-            width: 35%;
-        }
-
-        
-    .select2-container {
-        width:50% !important;
-        z-index: 1px;
-    }
-
-    .countryDropdown {
-        background: white;
-        color: black;
-    }
-
-    /* Style for the first Select2 dropdown with black background */
-    #updateProfileCountry + .select2-container .select2-selection {
-        color: white;
-        text-align: left;
-        height: 45px;
-        border-radius: 33px;
-        padding-top: 0.4rem;
-        padding-left: 1rem;
-        border: 2px solid purple;
-    }
-
-    .profile-content{
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* Center horizontally */
-        justify-content: center; /* Center vertically */
-        text-align: center; /* Center text */
-    }
-
-
-    @@media (max-width: 1080px)  {
-        .select2-container {
-        width:100% !important;
-        z-index: 1px;
-        }
-    }
-
-    </style>
     <div class="card mb-4 profile-container">
          <div class="profile-content profile-info">
             <img src="data:image/png;base64,@Model.ProfilePicture" alt="Profile Picture" class="profile-picture" />
@@ -99,7 +13,7 @@
 
              <div class="mt-2 pl-3 flex-column d-none updateProfileImage">
                  <!-- Update button -->
-                <button class="stossionBtn">Update</button>
+                <button class="stossionBtn updateUser" name="profilepicture">Update</button>
                  <!-- Cancel button -->
                 <button class="stossionCancelBtn cancel-btn">Cancel</button>
                 
@@ -108,20 +22,20 @@
         <hr/>
         <div class="profile-info">
             <label class="pl-3">Name: </label>
-            <span class="text-field">@Model.FirstName @Model.LastName</span>
+            <span class="text-field" id="labelName">@Model.FirstName @Model.LastName</span>
             <a href="#" class="edit-link" id="edit-name">Edit</a>
 
           <div class="d-none flex-column updateProfileInputField">
               <div class="d-flex">
                   <div class="col-6">
-                      <input type="text" class="form-control stextBox required" value="@Model.FirstName" />
+                      <input type="text" id="userFirstName" class="form-control stextBox required" value="@Model.FirstName" />
                   </div>
                   <div class="col-6">
-                      <input type="text" class="form-control stextBox required" value="@Model.LastName" />
+                      <input type="text" id="userLastName" class="form-control stextBox required" value="@Model.LastName" />
                   </div>
               </div>
               <div class="mt-2 pl-3">
-                  <button class="stossionBtn">Update</button>
+                  <button class="stossionBtn updateUser" name="name">Update</button>
                   <button class="stossionCancelBtn ml-2">Cancel</button>
               </div>
           </div>
@@ -129,11 +43,11 @@
 
         <div class="profile-info">
             <label class="pl-3">Country: </label>
-            <span class="text-field">
+            <span class="text-field" id="labelCountry">
                 <img src="@Model.Logo" alt="Country Logo" class="profile-logo" />
-                @Model.Country
+                <span id="countryNameLbl">@Model.Country</span>
             </span>
-            <input type="text" class="edit-field" value="@Model.Country" />
+            <input type="text" class="edit-field editCountry" value="@Model.Country" />
             <a href="#" class="edit-link" id="edit-country">Edit</a>
 
            <div class="d-none flex-column updateProfileInputField">
@@ -143,7 +57,7 @@
                   </div>
               </div>
               <div class="mt-2 pl-3">
-                  <button class="stossionBtn">Update</button>
+                  <button class="stossionBtn updateUser" name="country">Update</button>
                   <button class="stossionCancelBtn ml-2">Cancel</button>
               </div>
             </div>
@@ -151,14 +65,14 @@
 
         <div class="profile-info">
             <label class="pl-3">Gender: </label>
-            <span class="text-field">@Model.Gender</span>
+            <span class="text-field" id="labelGender">@Model.Gender</span>
             <input type="text" class="edit-field" value="@Model.Gender" />
             <a href="#" class="edit-link" id="edit-gender">Edit</a>
 
             <div class="d-none flex-column updateProfileInputField">
               <div class="d-flex">
                   <div class="col-12">
-                     <select class="form-control loginSelect updateProfileGender" name="Gender" id="Gender">
+                     <select class="form-control loginSelect updateProfileGender" name="Gender" id="updateProfileGender">
                           <option class="loginOption" value="1">Male</option>
                           <option class="loginOption" value="2">Female</option>
                           <option class="loginOption" value="3">Other</option>
@@ -166,7 +80,7 @@
                   </div>
               </div>
               <div class="mt-2 pl-3">
-                  <button class="stossionBtn">Update</button>
+                  <button class="stossionBtn updateUser" name="gender">Update</button>
                   <button class="stossionCancelBtn ml-2">Cancel</button>
               </div>
             </div>
@@ -175,18 +89,18 @@
 
         <div class="profile-info">
             <label class="pl-3">Email: </label>
-            <span class="text-field">@Model.Email</span>
+            <span class="text-field" id="labelEmail">@Model.Email</span>
             <input type="text" class="edit-field" value="@Model.Email" />
             <a href="#" class="edit-link" id="edit-email">Edit</a>
 
              <div class="d-none flex-column updateProfileInputField">
               <div class="d-flex">
                   <div class="col-12">
-                      <input type="text" class="form-control stextBox emailType required" value="@Model.Email" />
+                      <input type="text" id="userEmail" class="form-control stextBox emailType required" value="@Model.Email" />
                   </div>
               </div>
               <div class="mt-2 pl-3">
-                  <button class="stossionBtn">Update</button>
+                  <button class="stossionBtn updateUser" name="email">Update</button>
                   <button class="stossionCancelBtn ml-2">Cancel</button>
               </div>
           </div>
@@ -194,18 +108,19 @@
 
         <div class="profile-info">
             <label class="pl-3">Phone Number: </label>
-            <span class="text-field">@Model.PhoneNumber</span>
-            <input type="text" class="edit-field" value="@Model.PhoneNumber" />
-            <a href="#" class="edit-link" id="edit-phone">Edit</a>
+            <span class="text-field" id="labelPhoneNumber">@Model.PhoneNumber</span>
+                <input type="number" class="edit-field" value="@Model.PhoneNumber" />
+                <a href="#" class="edit-link" id="edit-phone">Edit</a>
 
           <div class="d-none flex-column updateProfileInputField">
               <div class="d-flex">
                   <div class="col-12">
-                      <input type="text" class="form-control stextBox required updateProfilePhoneNumber" value="@Model.PhoneNumber" />
+                      <input type="text" id="userPhoneNumber" class="form-control stextBox required updateProfilePhoneNumber phoneNumberValidation" value="@Model.PhoneNumber" />
+                      <span class="PhoneNumberErrorField d-none"></span>
                   </div>
               </div>
               <div class="mt-2 pl-3">
-                  <button class="stossionBtn">Update</button>
+                  <button class="stossionBtn updateUser" name="phonenumber">Update</button>
                   <button class="stossionCancelBtn ml-2">Cancel</button>
               </div>
           </div>
@@ -213,143 +128,5 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function () {
-            
-        $('.updateProfileInputField').addClass('d-none');
-        $('.edit-link').show();
 
-        $("#Gender option").filter(function() {
-            return $(this).text() == '@Model.Gender';
-        }).prop("selected", true);
-
-        // For each edit link
-        $('.edit-link').click(function (e) {
-            e.preventDefault();
-
-            // Assuming you want to select the option with the text "France"
-            var countryText = "@Model.Country";
-            var $select = $(".CountrySelection");
-            
-            // Find the option with the specified text
-            var $option = $select.find("option").filter(function() {
-                return $(this).text() === countryText;
-            });
-            
-            // Check if the option is found
-            if ($option.length > 0) {
-                // Set the found option as selected
-                $option.prop("selected", true);
-                
-                // Trigger the change event to update Select2 UI
-                $select.trigger("change");
-            } else {
-                console.log("Option with text '" + countryText + "' not found.");
-            }
-
-
-            var fieldId = $(this).attr('id').replace('edit-', '');
-
-            // Toggle visibility of text field and edit link for current field
-            $(this).siblings('.text-field').toggle();
-            $(this).toggle();
-
-            // Show the corresponding updateProfileInputField for current field
-            var currentProfileInfo = $(this).closest('.profile-info');
-            currentProfileInfo.find('.updateProfileInputField').toggleClass('d-none');
-
-            // Hide updateProfileInputField and show text-field for other fields
-            $('.profile-info').not(currentProfileInfo).find('.updateProfileInputField').addClass('d-none');
-            $('.profile-info').not(currentProfileInfo).find('.text-field').show();
-            $('.profile-info').not(currentProfileInfo).find('.edit-link').show();
-
-            //for profile picture
-            $(".profile-picture").attr("src", "data:image/png;base64," + localStorage.getItem('profilePicture'));
-             $('.updateProfileImage').addClass('d-none');
-             $('.edit-picture').removeClass('d-none');
-        });
-
-        // When cancel button is clicked
-        $('.stossionCancelBtn').click(function (e) {
-            e.preventDefault();
-
-            // Hide the updateProfileInputField
-            $(this).closest('.updateProfileInputField').addClass('d-none');
-
-            // Toggle visibility of text field and edit link
-            $(this).closest('.profile-info').find('.text-field').toggle();
-            $(this).closest('.profile-info').find('.edit-link').toggle();
-        });
-
-
-         $.ajax({
-            url: "/Common/GetCountryList", // Replace with your controller and action
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                // Handle the success response
-                if (data.length > 0) {
-                    var dropdown = $("#Country");
-                    dropdown.empty().trigger("change");
-                    // Iterate through the data and append options to the dropdown
-                    $.each(data, function (index, country) {
-                        var optionText = country.name;
-                        var optionValue = country.symbol; // You can change this to country.id if needed
-                        dropdown.append($("<option class=\"loginOption\" logo='" + country.logo + "'>").val(optionValue).html(optionText));
-                    });
-                }
-            },
-            error: function (error) {
-                // Handle errors
-                console.error(error);
-            }
-         });
-
-
-         // When the "Edit" link is clicked
-         $(".edit-picture").click(function(e) {
-             e.preventDefault(); // Prevent default link behavior
-             $('.updateProfileInputField').addClass('d-none');
-             $("#profile-picture-upload").click(); // Trigger click event on the hidden file input
-             $(".text-field").show();
-             $(".edit-link").show();
-         });
-         
-         // When a file is selected using the file input
-         $("#profile-picture-upload").change(function() {
-             var file = this.files[0];
-             
-             if (file) {
-                 $('.updateProfileImage').removeClass('d-none');
-                 $('.edit-picture').addClass('d-none');
-                 // Read the selected file as a data URL
-                 var reader = new FileReader();
-                 reader.onload = function (event) {
-                     // Display the selected image
-                     $(".profile-picture").attr("src", event.target.result);
-
-                 };
-                 reader.readAsDataURL(file);
-             }
-         });
-         
-         // when the cancel button is clicked
-         $(".cancel-btn").click(function() {
-             // reset the profile picture to the original image
-             $(".profile-picture").attr("src", "data:image/png;base64," + localStorage.getItem('profilePicture'));
-             $('.updateProfileImage').addClass('d-none');
-             $('.edit-picture').removeClass('d-none');
-            
-         });
-         
-         // When the update button is clicked
-         $(".update-btn").click(function() {
-             // Get the updated image source
-             var updatedImageSrc = $(".profile-picture").attr("src");
-             // Log the updated image source to the console
-             console.log("Updated image source:", updatedImageSrc);
-             // Perform any other actions, such as submitting the updated image to the server
-         });
-
-        });
-    </script>
+<script src="~/js/home/viewprofile.js"></script>

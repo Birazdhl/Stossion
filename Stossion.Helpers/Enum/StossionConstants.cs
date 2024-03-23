@@ -16,7 +16,8 @@ namespace Stossion.Helpers.Enum
 		public static string internalServerError = "Internal Server Error";
 		public static string invalidParameter = "Invalid Parameter";
 		public static string noContent = "No Content";
-
+		public static string invalidUsername = "Invalid Username";
+        public static string invalidEmail = "Invalid Email";
 
 
 
@@ -27,6 +28,7 @@ namespace Stossion.Helpers.Enum
 
         public static string VerifyEmail = "VerifyEmail";
 		public static string ResetPassword = "ResetPassword";
+        public static string ChangeEmail = "ChangeEmail";
         #endregion
     }
 }

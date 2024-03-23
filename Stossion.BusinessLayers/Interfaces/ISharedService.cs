@@ -9,5 +9,6 @@ namespace Stossion.BusinessLayers.Interfaces
     public interface ISharedService
     {
         string GetTemplates(string name);
+        bool CheckValidEmail(string email);
     }
 }

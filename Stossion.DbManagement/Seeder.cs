@@ -40,7 +40,10 @@ namespace Stossion.DbManagement
                                 Value = "<html> <div> <h3>Stossion Email Verification</h3> </div> <div> <p>Please click the following link to verify your Email Address.</p> <a href=\"@verificationLink\">Verify Email Address for Stossion</a> </div> <br/> <br/> <div>Regards,</div> <div>Stossion Team</div> </html>" },
 
                             new Templates { Name = StossionConstants.ResetPassword,
-                                Value = "<html><div><h3>Password Reset Link</h3></div><div><p>Please click the following link to reset your Password.</p><a href=\"@forgetPasswordLink\">Password Reset Link</a></div><br/> <br/> <div>Regards,</div><div>Stossion Team</div></html>\r\n"}
+                                Value = "<html><div><h3>Password Reset Link</h3></div><div><p>Please click the following link to reset your Password.</p><a href=\"@forgetPasswordLink\">Password Reset Link</a></div><br/> <br/> <div>Regards,</div><div>Stossion Team</div></html>\r\n"},
+
+                             new Templates { Name = StossionConstants.ChangeEmail,
+                                Value = "<html><div><h3>Stossion Change Email Confirmation</h3></div><div><p>Please click the following link to confirm to change your Email Address.</p><a href=\\\"@verificationLink\\\">Change Email Address for Stossion</a> </div><br/><br/> <div>Regards,</div><div>Stossion Team</div></html>\r\n"}
 
                         };
 

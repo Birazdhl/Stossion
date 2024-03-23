@@ -163,7 +163,27 @@ namespace Stossion.Web.Controllers
             return RedirectToAction("Index");
         }
 
-		[HttpGet]
+        public async Task<IActionResult> ChangeEmail(string token)
+        {
+            var response = await StossionPost("User", "ChangeEmail", token);
+            if (response.IsSuccess)
+            {
+
+                var result = JsonConvert.DeserializeObject<LoginResponse>(response.result);
+                if (result != null && (!String.IsNullOrEmpty(result.message) && !String.IsNullOrEmpty(result.token)))
+                {
+                    if (result.message == StossionConstants.invalidParameter)
+                    {
+                        return RedirectToAction("ErrorMessage", "Common", new { message = "Invalid Email Verification Token" });
+                    }
+                    HttpContext.Response.Cookies.Append("AuthorizationToken", result.token);
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
 		public async Task<IActionResult> EmailVerificationLink(string username)
 		{
 			var response = await StossionPost("User", "ForgetPasswordVerificationLink", username);
