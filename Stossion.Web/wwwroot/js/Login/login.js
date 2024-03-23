@@ -180,65 +180,6 @@
             format: 'MMM DD YYYY'
         });
 
-        $.ajax({
-            url: "/Common/GetCountryList", // Replace with your controller and action
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                // Handle the success response
-                if (data.length > 0) {
-                    var dropdown = $("#Country");
-                    dropdown.empty().trigger("change");
-                    // Iterate through the data and append options to the dropdown
-                    $.each(data, function (index, country) {
-                        var optionText = country.name;
-                        var optionValue = country.symbol; // You can change this to country.id if needed
-                        dropdown.append($("<option class=\"loginOption\" logo='" + country.logo + "'>").val(optionValue).html(optionText));
-                    });
-                }
-            },
-            error: function (error) {
-                // Handle errors
-                console.error(error);
-            }
-        });
-
-        $("#Country").select2({
-            placeholder: "Select Country",
-            containerCssClass: "countrySelectContainer",
-            dropdownCssClass: "countryDropdown",
-            templateResult: function (data, container) {
-
-                var flagImage = $("<img src=\"" + $(data.element).attr("logo") + "\" style=\"height: 1rem; width: 2rem;\" />");
-                var countryName = $("<span style=\"padding-left: 1rem;color: white;\">" + data.text + "</span>")
-                // Create a container (span) to hold both the image and the text
-                var resultContainer = $("<span></span>");
-
-                // Append the image and the text to the container
-                resultContainer.append(flagImage).append(countryName);
-
-                // Return the container
-                return resultContainer;
-            },
-            templateSelection: function (data, contianer) {
-                var flagImage = $("<img src=\"" + $(data.element).attr("logo") + "\" style=\"height: 2rem;\" />");
-                var countryName = $("<span style=\"padding-left: 1rem;color: white;\">" + data.text + "</span>")
-                var resultContainer = $("<span></span>");
-
-                // Append the image and the text to the container
-                resultContainer.append(flagImage).append(countryName);
-
-                // Return the container
-                return resultContainer;
-            },
-        }).on("select2:open", function () {
-        $(".select2-search__field").on("keydown", function (e) {
-                if (e.keyCode === 13) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            });
-        });  
 
         var date = new Date();
         date = getDateFormat(date.setFullYear(date.getFullYear() - 12));

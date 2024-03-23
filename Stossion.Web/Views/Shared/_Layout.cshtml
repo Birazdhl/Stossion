@@ -35,10 +35,10 @@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light navColor box-shadow mb-3">
         <div class="container-fluid">
             <div class="row w-100">
-                <div class="col-5 text-left">
+                <div class="col-md-6 col-5 text-left">
                     <a asp-controller="Home" asp-action="Index"> <img class="cursorPointer" src="~/images/logos/Stoss.png" /> </a>
                 </div>
-                <div class="col-7 text-center d-flex">
+                <div class="col-md-6 col-7 text-center d-flex navProfileMenu">
                     <div class="d-flex align-items-center">
                         <div>
                             <img src="" alt="Profile Picture" class="rounded-circle" style="width: 30px; height: 30px;">
@@ -63,14 +63,6 @@
                 <div  class="nav_bar">
                     <i class="fa fa-bars nav_btn"></i>
                 </div>
-                <div class="mobile_nav_items">
-                             <a href="#"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
-                             <a href="#"><i class="fas fa-cogs"></i><span>Components</span></a>
-                             <a href="#"><i class="fas fa-table"></i><span>Tables</span></a>
-                             <a href="#"><i class="fas fa-th"></i><span>Forms</span></a>
-                             <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
-                             <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
-               </div>
             </div>
         </div>
     </nav>
@@ -80,165 +72,36 @@
 
 <!--sidebar start-->
 <div class="sidebar">
-  <a href="#"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
-  <a href="#"><i class="fas fa-cogs"></i><span>Components</span></a>
-  <a href="#"><i class="fas fa-table"></i><span>Tables</span></a>
-  <a href="#"><i class="fas fa-th"></i><span>Forms</span></a>
-  <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
-  <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
+    <a href="#"><i class="fas fa-book"></i><span>Stories</span></a>
+    <a href="#"><i class="fas fa-user-secret"></i><span>Confession</span></a>
+    <a href="#"><i class="fas fa-newspaper"></i><span>Articles</span></a>
+    <a href="#"><i class="fas fa-quote-left"></i><span>Quotes</span></a>
+    <a href="#"><i class="fas fa-grin"></i><span>Memes</span></a>
+    <a href="#"><i class="fas fa-star"></i><span>Reviews</span></a>
 </div>
 <!--sidebar end-->
 
+@* mobile navigation *@
+<div class="mobile_nav">
+     <div class="mobile_nav_items">
+        <a href="#"><i class="fas fa-book"></i><span>Stories</span></a>
+        <a href="#"><i class="fas fa-user-secret"></i><span>Confession</span></a>
+        <a href="#"><i class="fas fa-newspaper"></i><span>Articles</span></a>
+        <a href="#"><i class="fas fa-quote-left"></i><span>Quotes</span></a>
+        <a href="#"><i class="fas fa-grin"></i><span>Memes</span></a>
+        <a href="#"><i class="fas fa-star"></i><span>Reviews</span></a>
+     </div>
+</div>
+
+<div class="content">
+         @RenderBody()
+</div>
 
 
-     @RenderBody()
 
 
-    <script type="text/javascript">
-         $(document).ready(function(){
-           $('.nav_btn').click(function(){
-             $('.mobile_nav_items').toggleClass('active');
-           });
-         });
-    </script>
 
     <style>
 
 
-.sidebar{
-  z-index: 1;
-  top: 0;
-  background: linear-gradient(45deg, #000000, purple);
-  padding-top: 70px;
-  position: fixed;
-  left: 0;
-  width: 250px;
-  height: calc(100% - 9%);
-  transition: 0.5s;
-  transition-property: left;
-  overflow-y: auto;
-  height: 100vh;
-}
-
-
-.sidebar a{
-  color: #fff;
-  display: block;
-  width: 100%;
-  line-height: 60px;
-  text-decoration: none;
-  padding-left: 40px;
-  box-sizing: border-box;
-  transition: 0.5s;
-  transition-property: background;
-}
-
-.sidebar a:hover{
-  background: #19B3D3;
-}
-
-.sidebar i{
-  padding-right: 10px;
-}
-
-label #sidebar_btn{
-  z-index: 1;
-  color: #fff;
-  position: fixed;
-  cursor: pointer;
-  left: 300px;
-  font-size: 20px;
-  margin: 5px 0;
-  transition: 0.5s;
-  transition-property: color;
-}
-
-label #sidebar_btn:hover{
-  color: #19B3D3;
-}
-
-#check:checked ~ .sidebar{
-  left: -185px;
-}
-
-#check:checked ~ .sidebar a span{
-  display: none;
-}
-
-#check:checked ~ .sidebar a{
-  font-size: 20px;
-  margin-left: 165px;
-  width: 100%;
-}
-
-
-#check:checked ~ .sidebar .profile_info{
-  display: none;
-}
-
-#check{
-  display: none;
-}
-
-.mobile_nav{
-  display: none;
-}
-
-/* Responsive CSS */
-
-@@media screen and (max-width: 780px){
-  .sidebar{
-    display: none;
-  }
-
-  #sidebar_btn{
-    display: none;
-  }
-
-
-  .mobile_nav{
-    display: block;
-  }
-
-
-  .nav_bar .nav_btn{
-    color: #fff;
-    cursor: pointer;
-    transition: 0.5s;
-    transition-property: color;
-  }
-
-  .nav_bar .nav_btn:hover{
-    color: #19B3D3;
-  }
-
-  .mobile_nav_items{
-    background: #2F323A;
-    display: none;
-  }
-
-  .mobile_nav_items a{
-    color: #fff;
-    display: block;
-    text-align: center;
-    letter-spacing: 1px;
-    line-height: 60px;
-    text-decoration: none;
-    box-sizing: border-box;
-    transition: 0.5s;
-    transition-property: background;
-  }
-
-  .mobile_nav_items a:hover{
-    background: #19B3D3;
-  }
-
-  .mobile_nav_items i{
-    padding-right: 10px;
-  }
-
-  .active{
-    display: block;
-  }
-}
 </style>

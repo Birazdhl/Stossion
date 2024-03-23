@@ -4,6 +4,7 @@
 // Write your JavaScript code.
 
 function validateEmail(emailId) {
+    console.log(emailId);
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test($('#' + emailId).val())) {
         return false;
