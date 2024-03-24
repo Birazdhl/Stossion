@@ -25,6 +25,7 @@ $(document).ready(function () {
 
         if (valid) {
 
+            $(".loading").fadeIn();
             var postData = {
                 "OldPassword": $("#oldPassword").val(),
                 "NewPassword": $("#newPassword").val(),
@@ -46,6 +47,7 @@ $(document).ready(function () {
                     else {
                         toastr.error(success)
                     }
+                    $(".loading").fadeOut();
                 },
                 error: function (error) {
                     toastr.error("Error")

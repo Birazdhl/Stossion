@@ -261,9 +261,13 @@ namespace Stossion.BusinessLayers.Services
 
                 getUser.EmailChangeConfirmationToken = string.Empty;
                 getUser.VerifyAt = DateTime.Now;
-                getUser.EmailConfirmed = true;
-                getUser.Email = getUser.ChangingEmail;
+
+                var emailChangeToken = await _userManager.GenerateChangeEmailTokenAsync(getUser, getUser.ChangingEmail);
+                await _userManager.ChangeEmailAsync(getUser, getUser.ChangingEmail,emailChangeToken);
+
+
                 getUser.ChangingEmail = string.Empty;
+
 
                 _context.Users.Update(getUser);
                 await _context.SaveChangesAsync();

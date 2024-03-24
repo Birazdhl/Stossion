@@ -8,7 +8,7 @@
     }).prop("selected", true);
 
     // For each edit link
-    $('.edit-link').click(function (e) {
+    $('.edit-link').on("click",function (e) {
         e.preventDefault();
 
         // Assuming you want to select the option with the text "France"
@@ -54,7 +54,7 @@
     });
 
     // When cancel button is clicked
-    $('.stossionCancelBtn').click(function (e) {
+    $('.stossionCancelBtn').on("click", function (e) {
         e.preventDefault();
 
         // Hide the updateProfileInputField
@@ -91,10 +91,10 @@
 
 
     // When the "Edit" link is clicked
-    $(".edit-picture").click(function (e) {
+    $(".edit-picture").on("click", function (e) {
         e.preventDefault(); // Prevent default link behavior
         $('.updateProfileInputField').addClass('d-none');
-        $("#profile-picture-upload").click(); // Trigger click event on the hidden file input
+        $("#profile-picture-upload").on("click", ); // Trigger click event on the hidden file input
         $(".text-field").show();
         $(".edit-link").show();
     });
@@ -118,7 +118,7 @@
     });
 
     // when the cancel button is clicked
-    $(".cancel-btn").click(function () {
+    $(".cancel-btn").on("click", function () {
         // reset the profile picture to the original image
         $(".profile-picture").attr("src", "data:image/png;base64," + localStorage.getItem('profilePicture'));
         $('.updateProfileImage').addClass('d-none');
@@ -127,7 +127,7 @@
     });
 
     // When the update button is clicked
-    $(".update-btn").click(function () {
+    $(".update-btn").on("click", function () {
         // Get the updated image source
         var updatedImageSrc = $(".profile-picture").attr("src");
         // Log the updated image source to the console
@@ -263,6 +263,7 @@
 
     function updateUser(key, value, currentEvnt, jqueryCommand, password = null, confirmPassword = null) {
 
+        $(".loading").fadeIn();
 
         var postData = {
             "Key": key,
@@ -284,7 +285,6 @@
                     else {
                         toastr.success("User Update successfully")
                     }
-                    debugger;
                     var cancelButton = (currentEvnt).next('.stossionCancelBtn');
                     cancelButton.trigger("click");
                     eval(jqueryCommand);
@@ -295,8 +295,11 @@
                     cancelButton.trigger("click");
                     toastr.error(success)
                 }
+                $(".loading").fadeOut();
             },
             error: function (error) {
+
+                $(".loading").fadeOut();
                 // Handle errors
                 console.error(error);
             }

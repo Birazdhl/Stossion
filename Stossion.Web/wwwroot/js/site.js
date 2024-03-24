@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+    $('.loading').fadeOut()
     $(document).on("click", function (event) {
         var submenuToggle = $("#submenuToggle");
         var submenu = $("#submenu");
