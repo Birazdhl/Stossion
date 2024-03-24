@@ -348,7 +348,7 @@ label #sidebar_btn {
 }
 
 /* Responsive CSS */
-@media screen and (max-width: 1080px) {
+@media screen and (max-width: 1024px) {
     .sidebar {
         display: none;
     }
