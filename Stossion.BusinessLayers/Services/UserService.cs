@@ -464,9 +464,14 @@ namespace Stossion.BusinessLayers.Services
 
             if (model.Key.ToLower() == "email")
             {
-                if (model.Password != model.ConfirmPasswords)
+                if (model.Password != model.ConfirmPassword)
                 {
                     return "Password Dosen't Match";
+                }
+
+                if (String.IsNullOrEmpty(model.Password))
+                {
+                    return "Password Is Required";
                 }
 
                 bool checkUserPasswords = await _userManager.CheckPasswordAsync(getUser, model.Password);
@@ -515,13 +520,12 @@ namespace Stossion.BusinessLayers.Services
             }
             else if (model.Key.ToLower() == "country")
             {
-                var id = Convert.ToInt32(model.Value);
-                var country = _context.Country.Where(x => x.Id == id);
+                var country = await _context.Country.Where(x => x.Symbol == model.Value).FirstOrDefaultAsync();
                 if (country == null)
                 {
                     return "Country Not Found";
                 }
-                getUser.CountryId = id;
+                getUser.CountryId = country.Id;
             }
             else if (model.Key.ToLower() == "gender")
             {

@@ -180,8 +180,8 @@ select.form-control:focus {
     }
 
         .sidebar a:hover {
-            border-top-right-radius: 25px;
-            border-bottom-left-radius: 25px;
+            border-top-left-radius: 25px;
+            border-bottom-right-radius: 25px;
             background: black;
         }
 
@@ -343,8 +343,8 @@ label #sidebar_btn {
 }
 
 .stossionRadius {
-    border-top-right-radius: 25px;
-    border-bottom-left-radius: 25px;
+    border-top-left-radius: 25px;
+    border-bottom-right-radius: 25px;
 }
 
 /* Responsive CSS */

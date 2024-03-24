@@ -137,14 +137,9 @@
 
     $(".updateUser").on("click", function () {
 
-       
+        var currentEvent = $(this);
         var key = $(this).attr("name");
-        var currentEvnt = $(this);
-        var value = "";
-        var jqueryCommand = "";
-        var password = "";
-        var confirmPassword = "";
-
+       
         if (key == "name") {
 
             if ($("#userFirstName").val() == null || $("#userLastName").val() == null) {
@@ -167,7 +162,7 @@
             var logo = selectedData.element.getAttribute("logo");
             var name = selectedData.text
 
-            jqueryCommand = "$('#countryNameLbl').text(name); $('.profile-logo').attr('src', logo);";
+            jqueryCommand = "$('#countryNameLbl').text('" + name +"'); $('.profile-logo').attr('src', '" + logo + "');";
 
             // Update image source
             
@@ -199,15 +194,11 @@
                                  <input type="password" id="confirmpassword" placeholder="ConfirmPassword" class="form-control stextBox required" />
                              </div>
                          </div>
-                            <div class="mt-4 pl-3">
-                                <button class="stossionBtn updateUser" name="phonenumber">Confirm</button>
-                                <button class="stossionCancelBtn ml-2">Cancel</button>
-                            </div>
                         </div>`,
 
-                showCancelButton: false,
-                showCloseButton: false,
-                showConfirmButton: false,
+                showCancelButton: true,
+                showCloseButton: true,
+                showConfirmButton: true,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 allowEnterKey: false,
@@ -216,23 +207,24 @@
               
                 preConfirm: function () {
                     return new Promise(function (resolve, reject) {
-
-                        var swalPassword = $("#Password").val();
-                        var swalConfirmPassword = $("#ConfirmPassword").val();
+                        debugger;
+                        var swalPassword = $("#password").val();
+                        var swalConfirmPassword = $("#confirmpassword").val();
 
                         if (swalPassword != swalConfirmPassword) {
                             toastr.error("Password Dosen't Match");
                             reject();
                         }
+                        value = $("#userEmail").val()
+                        jqueryCommand = "$(\"#labelEmail\").text(value)";
 
+                        updateUser(key, value, currentEvent, jqueryCommand, swalPassword, swalConfirmPassword)
+                        resolve();
                     });
                 }
             }).then(function () {
 
-                value = $("#userEmail").val()
-                jqueryCommand = "$(\"#labelEmail\").text(value)";
-                password = swalPassword;
-                confirmPassword = swalConfirmPassword;
+               
 
             }).catch(swal.noop);
 
@@ -243,11 +235,14 @@
             $(".swal2-modal").addClass('stossionRadius');
             $(".swal2-container.in").css('background-color', 'rgba(43, 165, 137, 0.45)');//changes the color of the overlay
             $(".swal2-title").css("color", "black");
-            //$(".swal2-confirm").css({ "padding": "0px", "height": "3rem", "width": "8rem" });
-            //$(".swal2-cancel").css({ "padding": "0px", "height": "3rem", "width": "8rem" });
-            $(".swal2-confirm").removeClass().addClass('stossionBtn')
-            $(".swal2-cancel").removeClass().addClass('stossionCancelBtn');
 
+            $(".swal2-confirm").addClass('stossionBtn')
+            $(".swal2-cancel").addClass('stossionCancelBtn');
+
+            $(".swal2-confirm").css('border-top-left-radius', '25px').css('border-bottom-right-radius', '25px');
+            $(".swal2-cancel").css('border-top-left-radius', '25px').css('border-bottom-right-radius', '25px');
+
+            return false;
 
         }
 
@@ -262,11 +257,18 @@
             value = $('.profile-picture').attr('src').split(",")[1];
         }
 
-        return false;
+        updateUser(key, value, currentEvent,jqueryCommand);
+
+    });
+
+    function updateUser(key, value, currentEvnt, jqueryCommand, password = null, confirmPassword = null) {
+
 
         var postData = {
             "Key": key,
             "Value": value,
+            "Password": password,
+            "ConfirmPassword": confirmPassword
         }
 
         $.ajax({
@@ -276,12 +278,13 @@
             success: function (success) {
                 // Handle the success response
                 if (success == "Success") {
-                    if (key = "email") {
+                    if (key == "email") {
                         toastr.info("Success! Please verify your email")
                     }
                     else {
                         toastr.success("User Update successfully")
                     }
+                    debugger;
                     var cancelButton = (currentEvnt).next('.stossionCancelBtn');
                     cancelButton.trigger("click");
                     eval(jqueryCommand);
@@ -299,8 +302,6 @@
             }
         });
 
-                    
 
-    });
-
+    }
 });

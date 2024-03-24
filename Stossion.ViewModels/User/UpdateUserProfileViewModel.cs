@@ -10,7 +10,7 @@ namespace Stossion.ViewModels.User
     {
         public string Key { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string ConfirmPasswords { get; set; } = string.Empty;
+        public string? Password { get; set; }
+        public string? ConfirmPassword { get; set; }
     }
 }
