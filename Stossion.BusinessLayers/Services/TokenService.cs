@@ -25,19 +25,7 @@ namespace Stossion.BusinessLayers.Services
 		{
 			var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
 			var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-			var ppValue = string.Empty;
-			var ProfilePicture = Path.Combine(Environment.CurrentDirectory, "wwwroot", "images", "user", user.UserName + ".png");
-			if (File.Exists(ProfilePicture))
-			{
-                byte[] imageBytes = File.ReadAllBytes(ProfilePicture);
-                ppValue = Convert.ToBase64String(imageBytes);
-			}
-			else
-			{
-				var nouserPhoto = Path.Combine(Environment.CurrentDirectory, "wwwroot", "images", "user", "noimage.png");
-                byte[] imageBytes = File.ReadAllBytes(nouserPhoto);
-                ppValue = Convert.ToBase64String(imageBytes);
-            }
+			
 			var userClaims = new[]
 			{
 				new Claim(ClaimTypes.NameIdentifier, user.UserId),

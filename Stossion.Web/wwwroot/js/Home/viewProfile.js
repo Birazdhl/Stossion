@@ -48,7 +48,6 @@
         $('.profile-info').not(currentProfileInfo).find('.edit-link').show();
 
         //for profile picture
-        $(".profile-picture").attr("src", "data:image/png;base64," + localStorage.getItem('profilePicture'));
         $('.updateProfileImage').addClass('d-none');
         $('.edit-picture').removeClass('d-none');
     });
@@ -92,15 +91,17 @@
 
     // When the "Edit" link is clicked
     $(".edit-picture").on("click", function (e) {
+        debugger;
         e.preventDefault(); // Prevent default link behavior
         $('.updateProfileInputField').addClass('d-none');
-        $("#profile-picture-upload").on("click", ); // Trigger click event on the hidden file input
+        $("#profile-picture-upload").trigger("click"); // Trigger click event on the hidden file input
         $(".text-field").show();
         $(".edit-link").show();
     });
 
     // When a file is selected using the file input
-    $("#profile-picture-upload").change(function () {
+    $("#profile-picture-upload").on("change", function () {
+        debugger;
         var file = this.files[0];
 
         if (file) {
@@ -139,6 +140,7 @@
 
         var currentEvent = $(this);
         var key = $(this).attr("name");
+        var jqueryCommand = "";
        
         if (key == "name") {
 
@@ -255,9 +257,12 @@
 
         else if (key == "profilepicture") {
             value = $('.profile-picture').attr('src').split(",")[1];
+            localStorage.removeItem('profilePicture');
+           jqueryCommand = "$(\".profile-picture\").attr(\"src\", \"data:image/png;base64,\" + value)";
         }
 
-        updateUser(key, value, currentEvent,jqueryCommand);
+        updateUser(key, value, currentEvent, jqueryCommand);
+
 
     });
 

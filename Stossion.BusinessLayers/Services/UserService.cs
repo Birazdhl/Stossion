@@ -9,6 +9,7 @@ using Stossion.BusinessLayers.Interfaces;
 using Stossion.DbManagement.StossionDbManagement;
 using Stossion.Domain;
 using Stossion.Helpers.Enum;
+using Stossion.Helpers.ImageHelper;
 using Stossion.Helpers.RestHelpers;
 using Stossion.ViewModels.User;
 using System;
@@ -20,6 +21,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Stossion.BusinessLayers.Services
 {
@@ -86,6 +88,11 @@ namespace Stossion.BusinessLayers.Services
 
                 var createUser = await _userManager.CreateAsync(newUser!, model.Password);
                 if (!createUser.Succeeded) return new LoginResponse() { flag = false, message = createUser.Errors.First().Description };
+
+                if (!String.IsNullOrEmpty(model.ProfilePicture))
+                {
+                    Image.SaveImage(ImageFolder.user.ToString(),model.ProfilePicture);
+                }
 
                 //Assign Default Role : Admin to first registrar; rest is user
                 var checkAdmin = await _roleManager.FindByNameAsync("Admin");
@@ -214,6 +221,8 @@ namespace Stossion.BusinessLayers.Services
         private async Task SendEmailChangeConfirmation(string email, string token)
         {
             string emailMessage = _context.Templates.Where(x => x.Name == StossionConstants.ChangeEmail).FirstOrDefault()?.Value ?? string.Empty;
+            token = HttpUtility.UrlEncode(token);
+
             var link = _config["JWT:Audience"] + "/Login/ChangeEmail?token=" + token;
             emailMessage = emailMessage.Replace("@verificationLink", link);
 
@@ -362,6 +371,7 @@ namespace Stossion.BusinessLayers.Services
                 }
 
                 var token = await _userManager.GeneratePasswordResetTokenAsync(getUser);
+                token = HttpUtility.UrlEncode(token);
 
                 string emailMessage = _context.Templates.Where(x => x.Name == StossionConstants.ResetPassword).FirstOrDefault()?.Value ?? string.Empty;
                 var link = _config["JWT:Audience"] + "/Login/ResetPassword?token=" + token + "&username=" + username;
@@ -444,7 +454,7 @@ namespace Stossion.BusinessLayers.Services
             var result = await dapperInterface.QuerySingleAsync<UserDetailsViewModel>(query.ToString(), new { username });
             if (result != null)
             {
-                result.ProfilePicture = await GetProfileImage(username);
+                result.ProfilePicture = Image.GetImage(ImageFolder.user.ToString(), username);
             }
             return result;
         }
@@ -546,7 +556,7 @@ namespace Stossion.BusinessLayers.Services
             }
             else if (model.Key.ToLower() == "profilepicture")
             {
-                getUser.ProfilePicture = model.Value;
+                    Image.SaveImage(ImageFolder.user.ToString(), model.Value, username);
             }
 
             _context.Users.Update(getUser);

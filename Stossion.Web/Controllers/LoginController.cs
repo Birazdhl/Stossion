@@ -9,6 +9,7 @@ using Stossion.Helpers.Enum;
 using System.Reflection;
 using Stossion.Helpers.RestHelpers;
 using Stossion.Web.Authorization;
+using System.Web;
 
 namespace Stossion.Web.Controllers
 {
@@ -206,7 +207,7 @@ namespace Stossion.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> ResetPassword(ForgetPasswordViewModel model)
 		{
-			var response = await StossionPost("User", "ResetPassword", model);
+            var response = await StossionPost("User", "ResetPassword", model);
 			return Ok("Success");
         }
 
